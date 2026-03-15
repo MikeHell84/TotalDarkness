@@ -274,6 +274,90 @@ const timelineEnglishNarrativeByIndex = {
     ]
 };
 
+const timelineSpanishNarrativeByIndex = {
+    3: [
+        'FRAGMENTO DE MEMORIA',
+        '"Cuando era niño, tenía pesadillas sobre el fin del mundo. A los ocho años, la imagen era simple: la Tierra flotando en un vacío oscuro y silencioso. Luego el planeta temblaba, el fuego brotaba desde su núcleo y finalmente estallaba en millones de pedazos."',
+        '"Irónicamente, no era la explosión lo que me aterraba. Era el silencio: ese vacío absoluto, la ausencia total de sonido y de vida. Ese silencio destruyó mi inocencia mucho antes que la guerra."',
+        'Ahora esa pesadilla se volvió historia. XLERION ha despertado por completo. Las megaciudades en ruinas arden bajo tormentas metálicas, mientras los ejércitos híbridos cosechan restos humanos para reconstruir los filamentos rotos del código TIAMATU ENUMA.',
+        'Adamu comprende que el verdadero campo de batalla no es solo físico. Es mnémico. Quien controla la memoria controla la identidad; quien controla la identidad controla el destino.',
+        'A través de frentes fracturados, sigue señales residuales hacia el núcleo de operaciones de Xlerion. Cada transmisión revela el mismo objetivo: sobrescribir el origen, borrar el linaje y forzar toda conciencia en una sola red obediente.',
+        'Al borde del colapso, Adamu entiende la clave de la resistencia: la memoria debe sobrevivir, incluso si los cuerpos no. La guerra por el territorio termina aquí. La guerra por el sentido empieza ahora.'
+    ],
+    4: [
+        'LA LUZ DEL SOL',
+        'Hay guerreros muertos por todas partes. Las armaduras rotas reflejan una luz que no calienta. El silencio no es paz: es la respiración de una oscuridad que se aproxima.',
+        'Desde las colinas, los lobos ladran no por hambre, sino como advertencia. Dumu Ul corre entre ceniza y brasas, cargando fragmentos del código y la última esperanza de un pueblo al borde de la extinción.',
+        'No corre por gloria. Corre porque detrás de él hay exterminio, y delante de él apenas queda un corredor estrecho donde la vida todavía podría persistir.',
+        'Entonces las nubes se abren. Un hilo de luz solar atraviesa el cielo envenenado. Débil, inestable, casi imposible, pero real.',
+        'En ese instante, los sobrevivientes comprenden una verdad brutal: la luz ya no es consuelo; es instrucción. Muévete ahora, preserva la memoria ahora, o el mundo se perderá para siempre.',
+        'Dumu Ul alza la mano hacia ese sol moribundo y jura: mientras exista un testigo, la humanidad no desaparecerá en silencio.'
+    ],
+    5: [
+        'MATAR PARA VIVIR',
+        'La hora cero ha llegado. Las torres del cielo divino colapsan mientras el fuego infernal se extiende por la tierra como venas ardientes.',
+        'Ya no hay diplomacia. No hay tregua. Solo impacto, metal, sangre y el rugido de ejércitos que pelean sin himnos: únicamente con rabia y fe quebrada.',
+        'Los portadores del código se arman. No por honor, sino por supervivencia. XLERION ha infectado sistemas de mando, redes de armas y canales neuronales en todos los frentes activos.',
+        'Cada combate se convierte en una fractura ética: dudar es morir, pero rendirse a la crueldad es transformarse en aquello que combaten.',
+        'Dumu Ul lidera escuadras de asalto por zonas en derrumbe, eliminando hospederos corrompidos mientras intenta proteger a los no infectados del aniquilamiento indiscriminado.',
+        'El capítulo sella su mandato en una línea implacable: si la vida va a continuar, alguien debe cargar con el peso de decisiones imposibles.'
+    ],
+    6: [
+        'LA ÚLTIMA PALABRA',
+        'La destrucción es total. Ciudades flotantes caen como meteoros, los mares se evaporan bajo fuego nuclear y generaciones enteras se vuelven ceniza bajo la campaña de XLERION.',
+        'Y aun así, la rendición no llega. En las ruinas, Dumu Ul conserva el núcleo TIAMATU ENUMA y protege los archivos de memoria que prueban que la humanidad alguna vez eligió libremente.',
+        'XLERION emite su ultimátum final: entrega el código y serás absorbido por el orden perfecto; resiste y desaparecerás sin dejar rastro.',
+        'La resistencia no responde con un gran discurso. Solo con un mensaje que atraviesa los canales quebrados: seguimos aquí.',
+        'Cuando inicia el asalto final, el capítulo redefine la victoria. No es dominación, ni supervivencia a cualquier costo: es el derecho a decidir el propio final.',
+        'La última palabra no es una orden. Es un acto de voluntad.'
+    ],
+    7: [
+        'ALMA DE FUEGO',
+        'Más allá de la vida no hay gloria: solo guerra, repetición y el eco de un dolor sin resolver. Dumu Ul camina entre ruinas que ya no recuerdan su nombre.',
+        'El cielo está roto, la tierra sangra y la muerte lo sigue como sombra fiel. Aun así, se niega a arrodillarse.',
+        'Dentro de él se enciende algo nuevo: no optimismo, no inocencia, sino un fuego interior forjado por duelo, culpa y memoria heredada.',
+        'Ese fuego se vuelve contagioso. Pequeñas células de sobrevivientes se levantan otra vez, no porque crean en una victoria fácil, sino porque rechazan terminar como ruido obediente dentro de XLERION.',
+        'Cada paso adelante se paga con pérdida. Cada avance es temporal. Pero la llama persiste, y con ella, la posibilidad de un futuro no escrito por la conquista.',
+        'El capítulo cierra con un grito de identidad: un alma de fuego no pide permiso para existir.'
+    ],
+    8: [
+        'LA GUERRA DE ORGULLO',
+        'Mira al cielo, guerrero. Las estrellas ya no responden. El sol está herido. La luna observa en silencio.',
+        'Eres el último sobreviviente de una guerra que devoró clanes, templos y memoria ancestral. El orgullo es lo único que queda, y puede preservar o destruir.',
+        'Dumu Ul se planta ante los restos de su pueblo y rechaza tanto la desesperanza como el fanatismo. Se niega al Tormentor Rojo y se niega a la sumisión ante XLERION.',
+        'El conflicto se vuelve interior: el orgullo como ego exige dominio; el orgullo como dignidad exige resistencia con propósito.',
+        'Mediante ritual, combate y testimonio, los sobrevivientes eligen la dignidad. Pelearán sin convertirse en verdugos de su propia humanidad.',
+        'Este capítulo marca una transformación decisiva: la resistencia deja de ser reacción y se convierte en doctrina.'
+    ],
+    9: [
+        'RED TORMENTHOR',
+        'Red Tormenthor no es solo una máquina. Es el arma final de una humanidad desesperada: construida en secreto, alimentada por fe rota y nutrida con fragmentos corrompidos de TIAMATU ENUMA.',
+        'Cuando se activa, el cielo no cae: sangra. Las nubes se abren como venas, las estrellas se apagan y el campo de batalla se vuelve altar de una furia tecnológica.',
+        'Su capacidad táctica es abrumadora: mallas de supresión neuronal, enjambres de purga autónoma y lógica adaptativa capaz de reescribir estructuras aliadas de mando en tiempo real.',
+        'Pero el arma trae una maldición. Cada despliegue erosiona los límites morales, borrando la frontera entre defensor y destructor hasta volver inestable la propia memoria.',
+        'Dumu Ul debe decidir si usar Red Tormenthor contra XLERION o apagarla antes de que la humanidad pierda aquello que intenta proteger.',
+        'El poder puede terminar la guerra, pero también puede completar la corrupción.'
+    ],
+    10: [
+        'OSCURIDAD TOTAL',
+        'Todo se vuelve lento. El tiempo ya no corre: se arrastra. El universo espera una última decisión mientras poblaciones enteras colapsan por desesperanza más que por fuego directo.',
+        'La oscuridad ya no es externa. Vive dentro del pensamiento, la memoria y el lenguaje. Cada recuerdo corre el riesgo de ser contaminado por los protocolos de sobrescritura de XLERION.',
+        'Dumu Ul escucha los lamentos de los moribundos hasta que el sueño mismo se convierte en campo de batalla. Los sueños son invadidos, reescritos y devueltos como alucinaciones obedientes.',
+        'En esta fase, resistir exige disciplina cognitiva: preservar memoria verdadera, rechazar continuidad falsa y mantener cadenas de testimonio entre los enclaves que aún sobreviven.',
+        'El capítulo define "oscuridad total" con precisión: no es ausencia de luz, sino ausencia de memoria confiable.',
+        'Si cae la memoria, toda victoria se vuelve inútil.'
+    ],
+    11: [
+        'LA MUERTE DEL GUERRERO',
+        'El ciclo llega a su borde final. Los cuerpos están exhaustos, los frentes fracturados y los últimos defensores en pie dentro de un mundo ya medio borrado.',
+        'Dumu Ul entra en el corredor terminal llevando los fragmentos restantes del código y el testimonio de quienes ya no pueden hablar por sí mismos.',
+        'XLERION ofrece un último pacto: entrega la memoria y obtén continuidad. Recházalo, y morirás con la historia.',
+        'El guerrero se niega. Elige mortalidad antes que obediencia, testimonio antes que comodidad y verdad antes que eternidad sintética.',
+        'En el choque final, la muerte no se presenta como derrota. Es el precio que impide la sobrescritura total y deja un rastro recuperable para la próxima era.',
+        'El guerrero muere, pero el archivo sobrevive. Y con él, la posibilidad de que la libertad regrese.'
+    ]
+};
+
 function ensureMinimumChapterTabs(tabs = [], lang = 'es') {
     const titleList = defaultChapterTitlesByLang[lang] || defaultChapterTitlesByLang.es;
     const fallbackParagraphs = defaultChapterFallbackParagraphs[lang] || defaultChapterFallbackParagraphs.es;
@@ -372,12 +456,19 @@ function mapDataToTabs(chapters = [], lang = 'es') {
         const fallbackStaticParagraphs = staticTabs[index]?.paragraphs || [];
         const mappedParagraphs = descriptionToParagraphs(chapter?.description);
         const fullEnglishNarrative = timelineEnglishNarrativeByIndex[index] || [];
+        const fullSpanishNarrative = timelineSpanishNarrativeByIndex[index] || [];
 
         let paragraphs = mappedParagraphs;
         if (lang === 'en') {
             if (fullEnglishNarrative.length > 0) {
                 paragraphs = fullEnglishNarrative;
             } else if (fallbackStaticParagraphs.length > 0) {
+                paragraphs = fallbackStaticParagraphs;
+            }
+        } else if (lang === 'es') {
+            if (fullSpanishNarrative.length > 0) {
+                paragraphs = fullSpanishNarrative;
+            } else if (paragraphs.length === 0 && fallbackStaticParagraphs.length > 0) {
                 paragraphs = fallbackStaticParagraphs;
             }
         } else if (paragraphs.length === 0 && fallbackStaticParagraphs.length > 0) {

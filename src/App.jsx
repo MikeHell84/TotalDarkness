@@ -11,6 +11,8 @@ import SectionStructurePage from './pages/SectionStructurePage';
 import TimelineView, { TimelineConnections, TimelineCamera } from './pages/TimelineView';
 import TotalDarknessChat from './components/TotalDarknessChat';
 import TimelineSectionPage from './pages/TimelineSectionPage';
+import introTheme from '../assets/audio/01. A Hope in The Dark.mp3';
+import mainTheme from '../assets/audio/Total Darkness - Redemthor.mp3';
 
 // ─── Bilingual tab data for SectionStructurePage (Historia + Vision) ──────────
 const HISTORIA_TABS = {
@@ -532,7 +534,16 @@ export default function App() {
   const PANEL_TV_OFF_MS = 300;
   const PANEL_TV_ON_MS = 300;
   const [language, setLanguage] = useState(null);
+  const [globalMusicVolume, setGlobalMusicVolume] = useState(1);
+  const [isMusicMuted, setIsMusicMuted] = useState(false);
+  const [isMusicPaused, setIsMusicPaused] = useState(false);
+  const [isSoundSettingsOpen, setIsSoundSettingsOpen] = useState(false);
+  const [isGyroEnabled, setIsGyroEnabled] = useState(false);
+  const [showGyroPermissionButton, setShowGyroPermissionButton] = useState(false);
   const { setLang } = useLanguage();
+  const introMusicRef = useRef(null);
+  const mainMusicRef = useRef(null);
+  const audioFadeIntervalRef = useRef(null);
 
   // Keep LanguageContext in sync so child pages (e.g. TimelineSectionPage) see the right lang
   useEffect(() => {
@@ -558,6 +569,7 @@ export default function App() {
   const panelPowerOnDoneTimeoutRef = useRef(null);
   const userHasInteractedRef = useRef(false);
   const dragVelocityRef = useRef({ theta: 0, phi: 0 });
+  const gyroBaselineRef = useRef({ beta: null, gamma: null });
 
   React.useEffect(() => {
     if (activeSection !== 'cronologia') {
@@ -583,6 +595,75 @@ export default function App() {
     mediaQuery.addListener(handleMediaChange);
     return () => mediaQuery.removeListener(handleMediaChange);
   }, []);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !isMobileDevice) {
+      setIsGyroEnabled(false);
+      setShowGyroPermissionButton(false);
+      return;
+    }
+
+    if (!('DeviceOrientationEvent' in window)) {
+      setIsGyroEnabled(false);
+      setShowGyroPermissionButton(false);
+      return;
+    }
+
+    const requiresExplicitPermission = typeof window.DeviceOrientationEvent?.requestPermission === 'function';
+    if (requiresExplicitPermission) {
+      setIsGyroEnabled(false);
+      setShowGyroPermissionButton(true);
+      return;
+    }
+
+    setIsGyroEnabled(true);
+    setShowGyroPermissionButton(false);
+  }, [isMobileDevice]);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !isGyroEnabled || !isMobileDevice) return;
+
+    const handleDeviceOrientation = (event) => {
+      if (showIntro || activeSection || isTransitioning) return;
+      const rotation = cameraRotationRef.current;
+      if (!rotation || rotation.targetPlanet) return;
+
+      const beta = event.beta;
+      const gamma = event.gamma;
+      if (!Number.isFinite(beta) || !Number.isFinite(gamma)) return;
+
+      if (gyroBaselineRef.current.beta === null || gyroBaselineRef.current.gamma === null) {
+        gyroBaselineRef.current = { beta, gamma };
+      }
+
+      const baselineBeta = gyroBaselineRef.current.beta ?? beta;
+      const baselineGamma = gyroBaselineRef.current.gamma ?? gamma;
+
+      const clampedGamma = Math.max(-45, Math.min(45, gamma - baselineGamma));
+      const clampedBeta = Math.max(-35, Math.min(35, beta - baselineBeta));
+
+      const targetTheta = universeCameraSnapshotRef.current.theta + clampedGamma * 0.015;
+      const targetPhi = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, universeCameraSnapshotRef.current.phi + clampedBeta * 0.01));
+
+      rotation.theta += (targetTheta - rotation.theta) * 0.2;
+      rotation.phi += (targetPhi - rotation.phi) * 0.2;
+
+      dragVelocityRef.current.theta = 0;
+      dragVelocityRef.current.phi = 0;
+      userHasInteractedRef.current = true;
+    };
+
+    window.addEventListener('deviceorientation', handleDeviceOrientation, true);
+    return () => {
+      window.removeEventListener('deviceorientation', handleDeviceOrientation, true);
+    };
+  }, [isGyroEnabled, isMobileDevice, showIntro, activeSection, isTransitioning]);
+
+  React.useEffect(() => {
+    if (showIntro || activeSection || isTransitioning) {
+      gyroBaselineRef.current = { beta: null, gamma: null };
+    }
+  }, [showIntro, activeSection, isTransitioning]);
 
   const triggerPanelPowerOn = React.useCallback(() => {
     if (panelPowerOnRevealTimeoutRef.current) {
@@ -620,7 +701,18 @@ export default function App() {
       webglUnsupported: 'Este visor embebido no tiene soporte WebGL completo.',
       webglFallback: 'Puedes navegar el contenido básico aquí o abrir la experiencia 3D en navegador externo.',
       copyrightNotice: `© ${new Date().getFullYear()} Total Darkness. Todos los derechos reservados.`,
-      dragToRotate: 'Arrastra para girar • Click para visitar'
+      dragToRotate: 'Arrastra para girar • Click para visitar',
+      trackTitleIntro: 'A Hope in The Dark',
+      trackTitleMain: 'Total Darkness',
+      musicRightsOnly: 'Derechos de autor reservados exclusivamente a la banda Redemthor.',
+      soundSettings: 'Configuración de sonido',
+      volume: 'Volumen',
+      mute: 'Silenciar',
+      unmute: 'Activar sonido',
+      play: 'Play',
+      pause: 'Pausa',
+      stop: 'Detener',
+      enableGyro: 'Activar giroscopio'
     },
     en: {
       chooseLanguage: 'Choose language',
@@ -632,7 +724,18 @@ export default function App() {
       webglUnsupported: 'This embedded viewer does not fully support WebGL.',
       webglFallback: 'You can browse the basic content here or open the 3D experience in an external browser.',
       copyrightNotice: `© ${new Date().getFullYear()} Total Darkness. All rights reserved.`,
-      dragToRotate: 'Drag to rotate • Click to visit'
+      dragToRotate: 'Drag to rotate • Click to visit',
+      trackTitleIntro: 'A Hope in The Dark',
+      trackTitleMain: 'Total Darkness',
+      musicRightsOnly: 'Copyright is exclusively reserved to the Redemthor band.',
+      soundSettings: 'Sound Settings',
+      volume: 'Volume',
+      mute: 'Mute',
+      unmute: 'Unmute',
+      play: 'Play',
+      pause: 'Pause',
+      stop: 'Stop',
+      enableGyro: 'Enable gyroscope'
     }
   };
 
@@ -640,6 +743,9 @@ export default function App() {
     const lang = language || 'es';
     return I18N[lang]?.[key] ?? I18N.es[key] ?? key;
   };
+
+  const currentTrackTitle = showIntro ? t('trackTitleIntro') : t('trackTitleMain');
+  const currentTrackRightsText = `"${currentTrackTitle}" — ${t('musicRightsOnly')}`;
 
   const sectionLabelById = {
     es: {
@@ -663,8 +769,122 @@ export default function App() {
     return sectionLabelById[lang]?.[planet.id] || planet.name;
   };
 
+  const requestGyroscopeAccess = React.useCallback(async () => {
+    if (typeof window === 'undefined' || !isMobileDevice) return;
+
+    const orientationApi = window.DeviceOrientationEvent;
+    if (!orientationApi) return;
+
+    const requestPermission = orientationApi.requestPermission;
+    if (typeof requestPermission === 'function') {
+      try {
+        const permissionState = await requestPermission();
+        const granted = permissionState === 'granted';
+        setIsGyroEnabled(granted);
+        setShowGyroPermissionButton(!granted);
+      } catch {
+        setIsGyroEnabled(false);
+        setShowGyroPermissionButton(true);
+      }
+      return;
+    }
+
+    setIsGyroEnabled(true);
+    setShowGyroPermissionButton(false);
+  }, [isMobileDevice]);
+
+  const applyMusicVolumeState = React.useCallback((volumeValue, mutedValue) => {
+    const effectiveVolume = mutedValue ? 0 : volumeValue;
+    if (introMusicRef.current) {
+      introMusicRef.current.volume = effectiveVolume;
+    }
+    if (mainMusicRef.current) {
+      mainMusicRef.current.volume = effectiveVolume;
+    }
+  }, []);
+
+  const playCurrentMusic = React.useCallback(async () => {
+    const targetAudio = showIntro ? introMusicRef.current : mainMusicRef.current;
+    if (!targetAudio) return;
+    try {
+      await targetAudio.play();
+      setIsMusicPaused(false);
+    } catch {
+    }
+  }, [showIntro]);
+
+  const pauseAllMusic = React.useCallback(() => {
+    if (introMusicRef.current) {
+      introMusicRef.current.pause();
+    }
+    if (mainMusicRef.current) {
+      mainMusicRef.current.pause();
+    }
+    setIsMusicPaused(true);
+  }, []);
+
+  const stopAllMusic = React.useCallback(() => {
+    if (introMusicRef.current) {
+      introMusicRef.current.pause();
+      introMusicRef.current.currentTime = 0;
+    }
+    if (mainMusicRef.current) {
+      mainMusicRef.current.pause();
+      mainMusicRef.current.currentTime = 0;
+    }
+    setIsMusicPaused(true);
+  }, []);
+
   const startMainExperience = React.useCallback(() => {
     if (showWhiteOverlay) return;
+
+    const introAudio = introMusicRef.current;
+    const postIntroAudio = mainMusicRef.current;
+
+    if (audioFadeIntervalRef.current) {
+      clearInterval(audioFadeIntervalRef.current);
+      audioFadeIntervalRef.current = null;
+    }
+
+    if (postIntroAudio) {
+      postIntroAudio.volume = 0;
+      postIntroAudio.currentTime = 0;
+      postIntroAudio.play().catch(() => {
+      });
+      setIsMusicPaused(false);
+    }
+
+    if (introAudio) {
+      const fadeDurationMs = 1800;
+      const stepMs = 50;
+      const totalSteps = Math.max(1, Math.floor(fadeDurationMs / stepMs));
+      let currentStep = 0;
+      const introStartVolume = Number.isFinite(introAudio.volume) ? introAudio.volume : 1;
+
+      audioFadeIntervalRef.current = setInterval(() => {
+        currentStep += 1;
+        const progress = Math.min(currentStep / totalSteps, 1);
+        const targetVolume = isMusicMuted ? 0 : globalMusicVolume;
+
+        introAudio.volume = Math.max(0, introStartVolume * (1 - progress) * targetVolume);
+        if (postIntroAudio) {
+          postIntroAudio.volume = Math.min(targetVolume, progress * targetVolume);
+        }
+
+        if (progress >= 1) {
+          clearInterval(audioFadeIntervalRef.current);
+          audioFadeIntervalRef.current = null;
+          introAudio.pause();
+          introAudio.currentTime = 0;
+          introAudio.volume = targetVolume;
+          if (postIntroAudio) {
+            postIntroAudio.volume = targetVolume;
+          }
+        }
+      }, stepMs);
+    } else if (postIntroAudio) {
+      postIntroAudio.volume = isMusicMuted ? 0 : globalMusicVolume;
+    }
 
     // Mostrar overlay blanco que comienza en opacidad 0
     // El useEffect se encargará de animarlo
@@ -702,7 +922,7 @@ export default function App() {
     setTimeout(() => {
       setShowMainContent(true);
     }, 10000);
-  }, [showWhiteOverlay]);
+  }, [showWhiteOverlay, globalMusicVolume, isMusicMuted]);
 
   // Effect para animar el overlay blanco
   React.useEffect(() => {
@@ -1364,7 +1584,6 @@ export default function App() {
 
     let fadeTimer;
     let phaseTimer;
-    let autoContinueTimer;
 
     if (introPhase === 1) {
       fadeTimer = setTimeout(() => {
@@ -1388,18 +1607,57 @@ export default function App() {
       }, 5500);
     }
 
-    if (introPhase === 3) {
-      autoContinueTimer = setTimeout(() => {
-        startMainExperience();
-      }, 12000);
-    }
-
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(phaseTimer);
-      clearTimeout(autoContinueTimer);
     };
-  }, [introPhase, showIntro, language, startMainExperience]);
+  }, [introPhase, showIntro, language]);
+
+  React.useEffect(() => {
+    if (!language || !showIntro) return;
+    const audio = introMusicRef.current;
+    if (!audio) return;
+
+    audio.volume = isMusicMuted ? 0 : globalMusicVolume;
+
+    const startMusic = async () => {
+      try {
+        if (audio.paused) {
+          await audio.play();
+        }
+      } catch {
+      }
+    };
+
+    startMusic();
+  }, [language, showIntro, globalMusicVolume, isMusicMuted]);
+
+  React.useEffect(() => {
+    applyMusicVolumeState(globalMusicVolume, isMusicMuted);
+  }, [globalMusicVolume, isMusicMuted, applyMusicVolumeState]);
+
+  React.useEffect(() => {
+    if (showIntro) return;
+    if (introMusicRef.current) {
+      introMusicRef.current.pause();
+      introMusicRef.current.currentTime = 0;
+    }
+  }, [showIntro]);
+
+  React.useEffect(() => {
+    return () => {
+      if (audioFadeIntervalRef.current) {
+        clearInterval(audioFadeIntervalRef.current);
+        audioFadeIntervalRef.current = null;
+      }
+      if (introMusicRef.current) {
+        introMusicRef.current.pause();
+      }
+      if (mainMusicRef.current) {
+        mainMusicRef.current.pause();
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     try {
@@ -1576,6 +1834,13 @@ export default function App() {
       {/* Intro Screen */}
       {showIntro && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <audio
+            ref={introMusicRef}
+            src={introTheme}
+            preload="auto"
+            loop
+          />
+
           {!language && (
             <div className="text-center px-6">
               <h2 className="text-cyan-300 text-xl md:text-3xl uppercase tracking-[0.2em] mb-8">{t('chooseLanguage')}</h2>
@@ -1694,11 +1959,9 @@ export default function App() {
               {/* Continue Button */}
               <button
                 onClick={startMainExperience}
-                className={`mt-12 text-sm uppercase tracking-wider transition-colors ${showWhiteOverlay ? 'opacity-0 text-zinc-500' : 'opacity-0 animate-intro-fade-in text-zinc-500 hover:text-cyan-400'
+                className={`mt-12 text-sm uppercase tracking-wider transition-colors ${showWhiteOverlay ? 'opacity-0 text-zinc-500' : 'text-zinc-500 hover:text-cyan-400'
                   }`}
                 style={{
-                  animationDelay: '2.5s',
-                  animationFillMode: 'forwards',
                   pointerEvents: showWhiteOverlay ? 'none' : 'auto'
                 }}
                 disabled={showWhiteOverlay}>
@@ -1706,9 +1969,21 @@ export default function App() {
               </button>
             </div>
           )}
+
+          {language && (
+            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 text-center text-[10px] md:text-xs text-zinc-500 max-w-4xl">
+              {currentTrackRightsText}
+            </p>
+          )}
         </div>
-      )
-      }
+      )}
+
+      <audio
+        ref={mainMusicRef}
+        src={mainTheme}
+        preload="auto"
+        loop
+      />
 
       {/* 3D Universe Canvas */}
       {
@@ -1771,8 +2046,7 @@ export default function App() {
             className="fixed inset-0 pointer-events-none z-[9]"
             style={{
               backdropFilter: `blur(${universeEntryBlur.toFixed(2)}px)`,
-              WebkitBackdropFilter: `blur(${universeEntryBlur.toFixed(2)}px)`,
-              backgroundColor: `rgba(0, 0, 0, ${(universeEntryBlur / 10) * 0.08})`
+              WebkitBackdropFilter: `blur(${universeEntryBlur.toFixed(2)}px)`
             }}
           />
         )
@@ -1885,6 +2159,9 @@ export default function App() {
                 <p className="text-zinc-500 text-[11px] md:text-sm text-center mb-2 md:mb-3">
                   {t('dragToRotate')}
                 </p>
+                <p className="text-zinc-500 text-[10px] md:text-xs text-center mb-2 md:mb-3 max-w-3xl mx-auto px-3">
+                  {currentTrackRightsText}
+                </p>
               </>
             )}
             <div className="flex gap-1.5 md:gap-4 justify-start md:justify-center items-center whitespace-nowrap px-2 py-1 rounded-xl bg-black/45 backdrop-blur-md overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
@@ -1907,24 +2184,122 @@ export default function App() {
           </div>
         )}
 
+        {language && (
+          <div className="fixed right-3 top-3 md:right-6 md:top-6 z-[80] pointer-events-auto">
+            <button
+              type="button"
+              onClick={() => setIsSoundSettingsOpen((prev) => !prev)}
+              aria-label={t('soundSettings')}
+              title={t('soundSettings')}
+              className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center gap-1 border border-cyan-400/70 text-cyan-200 bg-black/60 backdrop-blur-md hover:bg-black/75 transition-colors rounded-full"
+            >
+              <span className="text-base leading-none" aria-hidden="true">{isMusicMuted ? '🔇' : '🔊'}</span>
+              <span className="text-sm leading-none" aria-hidden="true">⚙️</span>
+            </button>
+
+            {isSoundSettingsOpen && (
+              <div className="mt-2 w-[88vw] max-w-xs md:max-w-sm rounded-md border border-cyan-400/70 bg-black/80 backdrop-blur-md p-3 shadow-[0_0_18px_rgba(0,229,229,0.25)]">
+                <div className="flex items-center justify-between text-cyan-200 text-[11px] md:text-xs uppercase tracking-[0.08em] mb-2">
+                  <span>{t('volume')}</span>
+                  <span>{Math.round(globalMusicVolume * 100)}%</span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={globalMusicVolume}
+                  onChange={(event) => setGlobalMusicVolume(Number(event.target.value))}
+                  className="w-full accent-cyan-400 mb-3"
+                />
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsMusicMuted((prev) => !prev)}
+                    aria-label={isMusicMuted ? t('unmute') : t('mute')}
+                    title={isMusicMuted ? t('unmute') : t('mute')}
+                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                  >
+                    {isMusicMuted ? '🔊' : '🔇'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={playCurrentMusic}
+                    aria-label={t('play')}
+                    title={t('play')}
+                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                  >
+                    ▶
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={pauseAllMusic}
+                    aria-label={t('pause')}
+                    title={t('pause')}
+                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                  >
+                    ⏸
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={stopAllMusic}
+                    aria-label={t('stop')}
+                    title={t('stop')}
+                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                  >
+                    ⏹
+                  </button>
+                </div>
+
+                <p className="mt-3 text-[10px] md:text-[11px] text-zinc-400 leading-snug">
+                  {currentTrackRightsText}
+                </p>
+
+                <p className="mt-1 text-[10px] md:text-[11px] text-zinc-500 text-center">
+                  {isMusicPaused ? '⏸' : '▶'}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {isMobileDevice && !showIntro && !activeSection && showGyroPermissionButton && (
+          <div className="fixed right-3 top-[62px] z-[80] pointer-events-auto">
+            <button
+              type="button"
+              onClick={requestGyroscopeAccess}
+              aria-label={t('enableGyro')}
+              title={t('enableGyro')}
+              className="w-11 h-11 flex items-center justify-center border border-cyan-400/70 text-cyan-200 bg-black/60 backdrop-blur-md hover:bg-black/75 transition-colors rounded-full"
+            >
+              <span className="text-base" aria-hidden="true">🧭</span>
+            </button>
+          </div>
+        )}
+
         {/* Content Panels - World/History/Vision/Personajes. Para cronologia, usar TimelineSectionPage */}
         {activeSection === 'cronologia' && showContent && (
           <div className={`fixed inset-0 overflow-y-auto pointer-events-auto origin-center transition-all ease-in duration-300 opacity-100 ${isPanelPoweringOff || (isPanelPoweringOn && !showContent) ? 'scale-y-0' : 'scale-y-100'
             }`}>
             <div className="min-h-screen pb-20 md:pb-0 backdrop-blur-md bg-black/80">
               {/* Solo un logo, no duplicado */}
-              <div className="h-[80px] flex items-start px-8 pt-[15px]">
+              <div className="h-[80px] flex items-start px-4 md:px-8 pt-[15px]">
                 <button
                   onClick={handleBackToUniverse}
                   disabled={isTransitioning}
-                  className="relative z-[60] pointer-events-auto cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] transition-transform"
+                  className="relative -ml-1 md:ml-0 z-[60] pointer-events-auto cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] transition-transform"
                   aria-label="Volver al inicio"
                   title="Volver al inicio"
                 >
                   <img
                     src="/logo-total-darkness.svg?v=20260308c"
                     alt="Total Darkness"
-                    className="h-[68px] w-auto object-contain drop-shadow-lg relative z-10 pointer-events-none"
+                    className="h-[56px] md:h-[68px] w-auto object-contain drop-shadow-lg relative z-10 pointer-events-none"
                   />
                 </button>
               </div>
@@ -1941,18 +2316,18 @@ export default function App() {
               }`}
           >
             <div className="min-h-screen pb-20 md:pb-0 backdrop-blur-md bg-black/80">
-              <div className="h-[80px] flex items-start px-8 pt-[15px]">
+              <div className="h-[80px] flex items-start px-4 md:px-8 pt-[15px]">
                 <button
                   onClick={handleBackToUniverse}
                   disabled={isTransitioning}
-                  className="relative z-[60] pointer-events-auto cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] transition-transform"
+                  className="relative -ml-1 md:ml-0 z-[60] pointer-events-auto cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.02] transition-transform"
                   aria-label="Volver al inicio"
                   title="Volver al inicio"
                 >
                   <img
                     src="/logo-total-darkness.svg?v=20260308c"
                     alt="Total Darkness"
-                    className="h-[68px] w-auto object-contain drop-shadow-lg relative z-10 pointer-events-none"
+                    className="h-[56px] md:h-[68px] w-auto object-contain drop-shadow-lg relative z-10 pointer-events-none"
                   />
                 </button>
               </div>
