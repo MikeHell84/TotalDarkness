@@ -11,8 +11,9 @@ import SectionStructurePage from './pages/SectionStructurePage';
 import TimelineView, { TimelineConnections, TimelineCamera } from './pages/TimelineView';
 import TotalDarknessChat from './components/TotalDarknessChat';
 import TimelineSectionPage from './pages/TimelineSectionPage';
-import introTheme from '../assets/audio/01. A Hope in The Dark.mp3';
-import mainTheme from '../assets/audio/Total Darkness - Redemthor.mp3';
+
+const INTRO_THEME_URL = '/assets/audio/01. A Hope in The Dark.mp3';
+const MAIN_THEME_URL = '/assets/audio/Total Darkness - Redemthor.mp3';
 
 // ─── Bilingual tab data for SectionStructurePage (Historia + Vision) ──────────
 const HISTORIA_TABS = {
@@ -1836,7 +1837,7 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
           <audio
             ref={introMusicRef}
-            src={introTheme}
+            src={INTRO_THEME_URL}
             preload="auto"
             loop
           />
@@ -1980,7 +1981,7 @@ export default function App() {
 
       <audio
         ref={mainMusicRef}
-        src={mainTheme}
+        src={MAIN_THEME_URL}
         preload="auto"
         loop
       />
