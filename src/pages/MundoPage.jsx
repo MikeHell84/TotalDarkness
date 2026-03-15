@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 // Inyectar estilos de animación de flotación y hologramas
 const floatingStyles = `
@@ -91,58 +92,112 @@ const styleSheet = document.createElement('style');
 styleSheet.textContent = floatingStyles;
 document.head.appendChild(styleSheet);
 
-const SECTIONS = [
-    {
-        title: 'Dilmun / Edén',
-        image: '/assets/parallax/filosofia-parallax.jpg',
-        leftImage: '/assets/parallax/universback.jpg',
-        rightImage: '/assets/parallax/universe360.png',
-        subtitleColor: '#00e5e5',
-        text: 'ut laoreet dolor magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem',
-        leftRune: 'ᚨᛉ',
-        rightRune: 'ᛟᚱ'
-    },
-    {
-        title: 'Código TIAMATU ENUMA',
-        image: '/assets/parallax/documentacion-parallax.jpg',
-        leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
-        rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg',
-        subtitleColor: '#00e5e5',
-        text: 'Núcleo simbólico y tecnológico que define memoria, linaje y posibilidad de reconstrucción del universo. Es el conocimiento ancestral que conecta todos los tiempos.',
-        leftRune: 'ᚦᚾ',
-        rightRune: 'ᛇᛈ'
-    },
-    {
-        title: 'Proyecto Red Tormenthor',
-        image: '/assets/parallax/proyectos-parallax.jpg',
-        leftImage: '/assets/parallax/Oficina0010.jpg',
-        rightImage: '/assets/parallax/Oficina0013.jpg',
-        subtitleColor: '#00e5e5',
-        text: 'Sistema central del conflicto final: arma, arquitectura de control y punto de no retorno para la saga. Representa el intento de XLERION de reescribir la existencia misma.',
-        leftRune: 'ᛊᛏ',
-        rightRune: 'ᛒᛖ'
-    },
-    {
-        title: 'Los Anunnaki',
-        image: '/assets/parallax/fundador-parallax.jpg',
-        leftImage: '/assets/parallax/XHunterPoster.png',
-        rightImage: '/assets/parallax/XHunterPoster0040.png',
-        subtitleColor: '#00e5e5',
-        text: 'Seres cósmicos que crearon y manipularon a la humanidad. Su legado de control genético y conflictos fraternales marca el destino del mundo.',
-        leftRune: 'ᛗᛚ',
-        rightRune: 'ᛜᛞ'
-    },
-    {
-        title: 'Ultima - El Nexo Final',
-        image: '/assets/parallax/soluciones-parallax.jpg',
-        leftImage: '/assets/parallax/PortadaDroneX3.png',
-        rightImage: '/assets/parallax/servicios-productos-parallax.jpg',
-        subtitleColor: '#00e5e5',
-        text: 'Dimensión cósmica donde convergen todos los mundos. Punto de confluencia donde pasado, presente y futuro colapsan en una singularidad. El lugar donde toda la verdad se revela.',
-        leftRune: 'ᚠᚨ',
-        rightRune: 'ᛟᛡ'
-    }
-];
+const SECTIONS_BY_LANG = {
+    es: [
+        {
+            title: 'Dilmun / Edén',
+            image: '/assets/parallax/filosofia-parallax.jpg',
+            leftImage: '/assets/parallax/universback.jpg',
+            rightImage: '/assets/parallax/universe360.png',
+            subtitleColor: '#00e5e5',
+            text: 'Un origen de equilibrio entre mundos y especies. Aquí nace la decisión humana, y con ella, la posibilidad de alterar el destino del universo.',
+            leftRune: 'ᚨᛉ',
+            rightRune: 'ᛟᚱ'
+        },
+        {
+            title: 'Código TIAMATU ENUMA',
+            image: '/assets/parallax/documentacion-parallax.jpg',
+            leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+            rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg',
+            subtitleColor: '#00e5e5',
+            text: 'Núcleo simbólico y tecnológico que define memoria, linaje y posibilidad de reconstrucción del universo. Es el conocimiento ancestral que conecta todos los tiempos.',
+            leftRune: 'ᚦᚾ',
+            rightRune: 'ᛇᛈ'
+        },
+        {
+            title: 'Proyecto Red Tormenthor',
+            image: '/assets/parallax/proyectos-parallax.jpg',
+            leftImage: '/assets/parallax/Oficina0010.jpg',
+            rightImage: '/assets/parallax/Oficina0013.jpg',
+            subtitleColor: '#00e5e5',
+            text: 'Sistema central del conflicto final: arma, arquitectura de control y punto de no retorno para la saga. Representa el intento de XLERION de reescribir la existencia misma.',
+            leftRune: 'ᛊᛏ',
+            rightRune: 'ᛒᛖ'
+        },
+        {
+            title: 'Los Anunnaki',
+            image: '/assets/parallax/fundador-parallax.jpg',
+            leftImage: '/assets/parallax/XHunterPoster.png',
+            rightImage: '/assets/parallax/XHunterPoster0040.png',
+            subtitleColor: '#00e5e5',
+            text: 'Seres cósmicos que crearon y manipularon a la humanidad. Su legado de control genético y conflictos fraternales marca el destino del mundo.',
+            leftRune: 'ᛗᛚ',
+            rightRune: 'ᛜᛞ'
+        },
+        {
+            title: 'Ultima - El Nexo Final',
+            image: '/assets/parallax/soluciones-parallax.jpg',
+            leftImage: '/assets/parallax/PortadaDroneX3.png',
+            rightImage: '/assets/parallax/servicios-productos-parallax.jpg',
+            subtitleColor: '#00e5e5',
+            text: 'Dimensión cósmica donde convergen todos los mundos. Punto de confluencia donde pasado, presente y futuro colapsan en una singularidad. El lugar donde toda la verdad se revela.',
+            leftRune: 'ᚠᚨ',
+            rightRune: 'ᛟᛡ'
+        }
+    ],
+    en: [
+        {
+            title: 'Dilmun / Eden',
+            image: '/assets/parallax/filosofia-parallax.jpg',
+            leftImage: '/assets/parallax/universback.jpg',
+            rightImage: '/assets/parallax/universe360.png',
+            subtitleColor: '#00e5e5',
+            text: 'An origin point of balance between worlds and species. Here, human choice is born—and with it, the power to alter the fate of the universe.',
+            leftRune: 'ᚨᛉ',
+            rightRune: 'ᛟᚱ'
+        },
+        {
+            title: 'TIAMATU ENUMA Code',
+            image: '/assets/parallax/documentacion-parallax.jpg',
+            leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+            rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg',
+            subtitleColor: '#00e5e5',
+            text: 'A symbolic-technological core that defines memory, lineage, and the possibility of rebuilding the universe. It is ancestral knowledge connecting all timelines.',
+            leftRune: 'ᚦᚾ',
+            rightRune: 'ᛇᛈ'
+        },
+        {
+            title: 'Tormenthor Network Project',
+            image: '/assets/parallax/proyectos-parallax.jpg',
+            leftImage: '/assets/parallax/Oficina0010.jpg',
+            rightImage: '/assets/parallax/Oficina0013.jpg',
+            subtitleColor: '#00e5e5',
+            text: 'The central system of the final conflict: weapon, control architecture, and point of no return for the saga. It represents XLERION’s attempt to rewrite existence itself.',
+            leftRune: 'ᛊᛏ',
+            rightRune: 'ᛒᛖ'
+        },
+        {
+            title: 'The Anunnaki',
+            image: '/assets/parallax/fundador-parallax.jpg',
+            leftImage: '/assets/parallax/XHunterPoster.png',
+            rightImage: '/assets/parallax/XHunterPoster0040.png',
+            subtitleColor: '#00e5e5',
+            text: 'Cosmic beings who created and manipulated humanity. Their legacy of genetic control and fraternal conflict shapes the destiny of the world.',
+            leftRune: 'ᛗᛚ',
+            rightRune: 'ᛜᛞ'
+        },
+        {
+            title: 'Ultima - The Final Nexus',
+            image: '/assets/parallax/soluciones-parallax.jpg',
+            leftImage: '/assets/parallax/PortadaDroneX3.png',
+            rightImage: '/assets/parallax/servicios-productos-parallax.jpg',
+            subtitleColor: '#00e5e5',
+            text: 'A cosmic dimension where all worlds converge. A convergence point where past, present, and future collapse into singularity—the place where all truth is revealed.',
+            leftRune: 'ᚠᚨ',
+            rightRune: 'ᛟᛡ'
+        }
+    ]
+};
 
 const RUNIC_GLYPHS = ['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ', 'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ'];
 
@@ -248,6 +303,12 @@ function MatrixRain({ columns = 15, speed = 50 }) {
 }
 
 export default function MundoPage() {
+    const { lang } = useLanguage();
+    const sections = SECTIONS_BY_LANG[lang] || SECTIONS_BY_LANG.es;
+    const sectionMenuLabels = lang === 'en'
+        ? ['dilmun / eden', 'earth', 'earth x', 'x-corp', 'ultima']
+        : ['dilmun / eden', 'Tierra', 'Tierra X', 'X-corp', 'Ultima'];
+
     const [index, setIndex] = useState(0);
     const [booting, setBooting] = useState(true);
     const [showRunicSubtitle, setShowRunicSubtitle] = useState(false);
@@ -255,7 +316,7 @@ export default function MundoPage() {
     const [matrixKey, setMatrixKey] = useState(0);
     const [pressedCenter, setPressedCenter] = useState(false);
     const [viewportWidth, setViewportWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1366));
-    const section = SECTIONS[index];
+    const section = sections[index];
 
     const isTablet = viewportWidth < 1320;
     const isMobile = viewportWidth < 1024;
@@ -310,12 +371,12 @@ export default function MundoPage() {
     const handlePrev = () => {
         setPressedCenter(true);
         setTimeout(() => setPressedCenter(false), 200);
-        setIndex((prev) => (prev === 0 ? SECTIONS.length - 1 : prev - 1));
+        setIndex((prev) => (prev === 0 ? sections.length - 1 : prev - 1));
     };
     const handleNext = () => {
         setPressedCenter(true);
         setTimeout(() => setPressedCenter(false), 200);
-        setIndex((prev) => (prev === SECTIONS.length - 1 ? 0 : prev + 1));
+        setIndex((prev) => (prev === sections.length - 1 ? 0 : prev + 1));
     };
 
     return (
@@ -400,7 +461,7 @@ export default function MundoPage() {
 
             {/* MENU PLANETAS - 80 PX (verde oscuro en imagen) */}
             <div style={{ minHeight: isMobile ? 58 : 80, height: 'auto', background: 'transparent', display: 'flex', justifyContent: isMobile ? 'flex-start' : 'center', alignItems: 'center', gap: isMobile ? 8 : 24, flexShrink: 0, flexWrap: 'wrap', padding: isMobile ? '8px 10px' : '0 12px' }}>
-                {['dildum / eden', 'Tierra', 'Tierra X', 'X-corp', 'Ultima'].map((text, btnIdx) => (
+                {sectionMenuLabels.map((text, btnIdx) => (
                     <div
                         key={btnIdx}
                         onClick={() => {
