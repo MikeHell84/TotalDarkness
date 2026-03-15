@@ -190,6 +190,90 @@ const defaultChapterFallbackParagraphs = {
     ]
 };
 
+const timelineEnglishNarrativeByIndex = {
+    3: [
+        'MEMORY FRAGMENT',
+        '"When I was a child, I had nightmares about the end of the world. At eight years old, the image was simple: Earth floating in a dark and silent void. Then the planet trembled, fire erupted from within, and finally it shattered into millions of pieces."',
+        '"Ironically, what terrified me was not the explosion. It was the silence—the absolute void, the absence of every sound and every life. That silence destroyed my innocence long before war did."',
+        'Now that nightmare has become history. XLERION has awakened in full. Ruined megacities burn under metallic storms, while hybrid armies harvest human remains to rebuild the broken strands of the TIAMATU ENUMA code.',
+        'Adamu understands that the true battlefield is not only physical. It is mnemonic. Whoever controls memory controls identity; whoever controls identity controls destiny.',
+        'Across fractured fronts, he follows residual signals toward the Xlerion operations core. Every transmission reveals the same objective: overwrite origin, erase lineage, and force all consciousness into a single obedient network.',
+        'At the edge of collapse, Adamu realizes the key to resistance: memory must survive, even if bodies do not. The war for territory ends here. The war for meaning begins now.'
+    ],
+    4: [
+        'THE LIGHT OF THE SUN',
+        'Dead warriors cover the field. Broken armor reflects a light that gives no warmth. The silence is not peace—it is the breath of an approaching darkness.',
+        'From the hilltops, wolves bark not from hunger, but as warning. Dumu Ul runs through ash and cinders, carrying fragments of the code and the last hope of a people already on the verge of extinction.',
+        'He does not run for glory. He runs because behind him there is extermination, and ahead of him there is one narrow corridor where life might still persist.',
+        'Then the clouds tear apart. A thin beam of sunlight descends through poisoned skies. Weak, unstable, almost impossible—yet real.',
+        'In that moment, the survivors understand a brutal truth: light is no longer comfort; it is instruction. Move now, preserve memory now, or lose the world forever.',
+        'Dumu Ul raises his hand toward the fading sun and takes an oath: as long as one witness remains, humanity will not disappear in silence.'
+    ],
+    5: [
+        'KILL TO LIVE',
+        'Zero hour has arrived. The towers of the divine sky collapse while infernal fire spreads through the earth like burning veins.',
+        'There is no diplomacy left. No truce. Only impact, metal, blood, and the roar of armies that fight without hymns—only with rage and fractured faith.',
+        'The carriers of the code arm themselves. Not for honor, but for survival. XLERION has infected command systems, weapon grids, and neural channels across every active front.',
+        'Each engagement becomes an ethical fracture: to hesitate is to die, but to surrender to cruelty is to become what they are fighting against.',
+        'Dumu Ul leads strike units through collapsing zones, cutting down corrupted hosts while trying to protect the uninfected from indiscriminate annihilation.',
+        'The chapter seals its vow in one merciless line: if life is to continue, someone must endure the weight of impossible choices.'
+    ],
+    6: [
+        'THE LAST WORD',
+        'Destruction is total. Floating cities fall like meteors, seas evaporate under nuclear fire, and entire generations become ash beneath XLERION’s campaign.',
+        'Yet surrender does not come. In the ruins, Dumu Ul still carries the TIAMATU ENUMA core and protects the surviving memory archives that prove humanity once chose freely.',
+        'XLERION broadcasts a final ultimatum: yield the code and be absorbed into perfect order, or resist and vanish without trace.',
+        'The resistance sends no grand speech. Only one response spreads through shattered channels: we remain.',
+        'As the final assault begins, the chapter reframes victory itself. Not domination, not survival at any cost—only the right to define one’s own ending.',
+        'The "last word" is not a command. It is an act of will.'
+    ],
+    7: [
+        'SOUL OF FIRE',
+        'Beyond life there is no glory—only war, repetition, and the echo of unresolved pain. Dumu Ul walks through ruins that no longer remember their own names.',
+        'The sky is broken, the earth bleeds, and death follows him like a loyal shadow. Still he refuses to kneel.',
+        'Inside him, something reignites: not optimism, not innocence—an inner fire forged from grief, guilt, and inherited memory.',
+        'That fire becomes contagious. Small survivor cells rise again, not because they believe in easy victory, but because they refuse to end as obedient noise inside XLERION.',
+        'Every step forward is paid in loss. Every gain is temporary. Yet the flame persists, and with it the possibility of a future not written by conquest.',
+        'The chapter closes on a battle-cry of identity: a soul of fire does not ask permission to exist.'
+    ],
+    8: [
+        'THE WAR OF PRIDE',
+        'Look at the sky, warrior. The stars no longer answer. The sun is wounded. The moon watches in silence.',
+        'You are the last survivor of a war that consumed clans, temples, and ancestral memory. Pride is all that remains—and pride can either preserve or destroy.',
+        'Dumu Ul stands before the remnants of his people and rejects both despair and fanaticism. He refuses the Red Tormentor and refuses submission to XLERION.',
+        'The conflict turns inward: pride as ego demands domination, pride as dignity demands resistance with purpose.',
+        'Through ritual, combat, and testimony, the survivors choose dignity. They will fight without becoming executioners of their own humanity.',
+        'This chapter marks a decisive transformation: resistance is no longer reaction. It becomes doctrine.'
+    ],
+    9: [
+        'RED TORMENTHOR',
+        'Red Tormenthor is not merely a machine. It is the final weapon of desperate humanity—built in secret, fueled by broken faith, and fed by corrupted fragments of TIAMATU ENUMA.',
+        'When activated, the sky does not fall. It bleeds. Clouds open like veins, stars fade, and the battlefield becomes an altar for technological wrath.',
+        'Its tactical output is overwhelming: neural suppression grids, autonomous purge swarms, and adaptive logic capable of rewriting allied command structures in real time.',
+        'But the weapon carries a curse. Every deployment erodes moral boundaries, blurring defender and destroyer until memory itself becomes unstable.',
+        'Dumu Ul must decide whether to wield Red Tormenthor against XLERION or shut it down before humanity loses what it is trying to protect.',
+        'Power can end the war—but it can also finish the corruption.'
+    ],
+    10: [
+        'TOTAL DARKNESS',
+        'Everything slows. Time no longer runs; it drags. The universe waits for one final decision while entire populations collapse under despair rather than direct fire.',
+        'Darkness is no longer external. It lives inside thought, memory, and language. Each recollection risks contamination by XLERION’s overwrite protocols.',
+        'Dumu Ul hears the laments of the dying until sleep itself becomes a battlefield. Dreams are invaded, rewritten, and returned as obedient hallucinations.',
+        'At this stage, resistance depends on cognitive discipline: preserve true memory, reject false continuity, and keep witness chains alive across the remaining enclaves.',
+        'The chapter defines "total darkness" with precision: not absence of light, but absence of trustworthy memory.',
+        'If memory falls, all victories become meaningless.'
+    ],
+    11: [
+        'THE WARRIOR\'S DEATH',
+        'The cycle reaches its final edge. Bodies are exhausted, fronts are fractured, and the last defenders stand in a world already half-erased.',
+        'Dumu Ul enters the terminal corridor carrying the remaining code fragments and the testimonies of those who can no longer speak for themselves.',
+        'XLERION offers one last pact: surrender memory, gain continuity. Reject it, and die with history.',
+        'The warrior refuses. He chooses mortality over obedience, witness over comfort, and truth over synthetic eternity.',
+        'In the final clash, death is not framed as failure. It is the price that prevents total overwrite and leaves a recoverable trail for the next age.',
+        'The warrior dies, but the archive survives. And with it, the possibility that freedom can return.'
+    ]
+};
+
 function ensureMinimumChapterTabs(tabs = [], lang = 'es') {
     const titleList = defaultChapterTitlesByLang[lang] || defaultChapterTitlesByLang.es;
     const fallbackParagraphs = defaultChapterFallbackParagraphs[lang] || defaultChapterFallbackParagraphs.es;
@@ -287,13 +371,23 @@ function mapDataToTabs(chapters = [], lang = 'es') {
         const title = localizeChapterTitle(sourceTitle, lang);
         const fallbackStaticParagraphs = staticTabs[index]?.paragraphs || [];
         const mappedParagraphs = descriptionToParagraphs(chapter?.description);
+        const fullEnglishNarrative = timelineEnglishNarrativeByIndex[index] || [];
+
+        let paragraphs = mappedParagraphs;
+        if (lang === 'en') {
+            if (fullEnglishNarrative.length > 0) {
+                paragraphs = fullEnglishNarrative;
+            } else if (fallbackStaticParagraphs.length > 0) {
+                paragraphs = fallbackStaticParagraphs;
+            }
+        } else if (paragraphs.length === 0 && fallbackStaticParagraphs.length > 0) {
+            paragraphs = fallbackStaticParagraphs;
+        }
 
         return {
             title,
             label: title,
-            paragraphs: lang === 'en' && fallbackStaticParagraphs.length > 0
-                ? fallbackStaticParagraphs
-                : mappedParagraphs,
+            paragraphs,
             centerImage: chapter?.image || '/images/documentacion-parallax.jpg',
             leftImage: '/images/filosofia-parallax.jpg',
             rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
