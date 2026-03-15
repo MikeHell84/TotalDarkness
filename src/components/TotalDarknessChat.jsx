@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { sendChatMessage } from '../services/aiChatService';
+import { useLanguage } from '../context/LanguageContext';
 
 const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '';
 
@@ -52,10 +53,35 @@ const FAB_SIZE = 56;
 const FAB_TOP_SAFE = 86;
 const FAB_BOTTOM_SAFE = 86;
 const FAB_Y_STORAGE_KEY = 'td-enki-fab-y-ratio';
-const WELCOME_MSG = {
-    role: 'assistant',
-    content:
-        'Registro iniciado. Soy ENKI, custodio del juicio y la memoria en Total Darkness. Observo el Código TIAMATU ENUMA y las rutas del exilio. Pregúntame sobre personajes, locaciones, capítulos, la Red Tormenthor o cualquier tecnicismo del lore.',
+const CHAT_UI = {
+    es: {
+        welcome:
+            'Registro iniciado. Soy ENKI, custodio del juicio y la memoria en Total Darkness. Observo el Código TIAMATU ENUMA y las rutas del exilio. Pregúntame sobre personajes, locaciones, capítulos, la Red Tormenthor o cualquier tecnicismo del lore.',
+        senderUser: '// USUARIO',
+        senderEnki: '// ENKI',
+        noKeyTitle: '⚠ ENKI sin conexión',
+        noKeyBody: 'Para activar el oráculo, añade tu clave de OpenRouter en',
+        noKeyCta: '→ Obtener clave gratuita en openrouter.ai',
+        noKeyNote: '(sin tarjeta de crédito)',
+        panelSubtitle: 'Oráculo · Total Darkness',
+        fabTitle: 'ENKI — Oráculo de Total Darkness',
+        inputPlaceholder: 'Pregunta sobre el lore…',
+        genericError: 'Error de conexión con el oráculo.',
+    },
+    en: {
+        welcome:
+            'Log initialized. I am ENKI, custodian of judgment and memory in Total Darkness. I observe the TIAMATU ENUMA Code and the routes of exile. Ask me about characters, locations, chapters, the Tormenthor Network, or any lore technicality.',
+        senderUser: '// USER',
+        senderEnki: '// ENKI',
+        noKeyTitle: '⚠ ENKI offline',
+        noKeyBody: 'To activate the oracle, add your OpenRouter key in',
+        noKeyCta: '→ Get a free key at openrouter.ai',
+        noKeyNote: '(no credit card required)',
+        panelSubtitle: 'Oracle · Total Darkness',
+        fabTitle: 'ENKI — Total Darkness Oracle',
+        inputPlaceholder: 'Ask about the lore…',
+        genericError: 'Connection error with the oracle.',
+    },
 };
 
 function getBottomBlockedSpace() {
@@ -109,7 +135,7 @@ function TypingDots() {
 }
 
 /* ── Single message bubble ───────────────────────────────── */
-function MessageBubble({ msg }) {
+function MessageBubble({ msg, labels }) {
     const isUser = msg.role === 'user';
     return (
         <div
@@ -131,7 +157,7 @@ function MessageBubble({ msg }) {
                     opacity: 0.7,
                 }}
             >
-                {isUser ? '// USUARIO' : '// ENKI'}
+                {isUser ? labels.senderUser : labels.senderEnki}
             </span>
             <div
                 style={{
@@ -156,7 +182,7 @@ function MessageBubble({ msg }) {
 }
 
 /* ── No API key notice ───────────────────────────────────── */
-function NoKeyNotice() {
+function NoKeyNotice({ labels }) {
     return (
         <div
             style={{
@@ -171,9 +197,9 @@ function NoKeyNotice() {
                 fontFamily: 'monospace',
             }}
         >
-            <strong>⚠ ENKI sin conexión</strong>
+            <strong>{labels.noKeyTitle}</strong>
             <br />
-            Para activar el oráculo, añade tu clave de OpenRouter en <code>.env</code>:
+            {labels.noKeyBody} <code>.env</code>:
             <br />
             <code>VITE_OPENROUTER_API_KEY=sk-or-v1-...</code>
             <br />
@@ -183,17 +209,19 @@ function NoKeyNotice() {
                 rel="noopener noreferrer"
                 style={{ color: ACCENT, textDecoration: 'underline' }}
             >
-                → Obtener clave gratuita en openrouter.ai
+                {labels.noKeyCta}
             </a>
-            &nbsp;(sin tarjeta de crédito)
+            &nbsp;{labels.noKeyNote}
         </div>
     );
 }
 
 /* ── Main Chat Component ─────────────────────────────────── */
 export default function TotalDarknessChat() {
+    const { lang } = useLanguage();
+    const labels = CHAT_UI[lang] || CHAT_UI.es;
     const [open, setOpen] = useState(false);
-    const [messages, setMessages] = useState([WELCOME_MSG]);
+    const [messages, setMessages] = useState([{ role: 'assistant', content: labels.welcome }]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -215,6 +243,15 @@ export default function TotalDarknessChat() {
         startFabY: 0,
         moved: false,
     });
+
+    useEffect(() => {
+        setMessages((prev) => {
+            if (prev.length === 1 && prev[0]?.role === 'assistant') {
+                return [{ role: 'assistant', content: labels.welcome }];
+            }
+            return prev;
+        });
+    }, [labels.welcome]);
 
     /* Auto-scroll to bottom */
     useEffect(() => {
@@ -271,18 +308,18 @@ export default function TotalDarknessChat() {
         try {
             // Only pass user/assistant messages (not the welcome if it's the first)
             const apiHistory = history.filter((m) => m.role !== 'system');
-            const reply = await sendChatMessage(apiHistory, API_KEY);
+            const reply = await sendChatMessage(apiHistory, API_KEY, lang);
             setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
         } catch (err) {
             if (err.message === 'NO_API_KEY') {
                 setError('no_key');
             } else {
-                setError(err.message || 'Error de conexión con el oráculo.');
+                setError(err.message || labels.genericError);
             }
         } finally {
             setLoading(false);
         }
-    }, [input, loading, messages]);
+    }, [input, loading, messages, labels.genericError, lang]);
 
     const handleKey = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -413,7 +450,7 @@ export default function TotalDarknessChat() {
             onPointerDown={handleFabPointerDown}
             onPointerMove={handleFabPointerMove}
             onPointerUp={handleFabPointerUp}
-            title="ENKI — Oráculo de Total Darkness"
+            title={labels.fabTitle}
             style={fabStyle}
             onMouseEnter={(e) => {
                 if (!isMobile) e.currentTarget.style.transform = 'scale(1.1)';
@@ -477,7 +514,7 @@ export default function TotalDarknessChat() {
                             ENKI
                         </div>
                         <div style={{ color: 'rgba(0,224,255,0.5)', fontSize: 10, fontFamily: 'monospace' }}>
-                            Oráculo · Total Darkness
+                            {labels.panelSubtitle}
                         </div>
                     </div>
                 </div>
@@ -507,10 +544,10 @@ export default function TotalDarknessChat() {
                     scrollbarColor: 'rgba(0,224,255,0.2) transparent',
                 }}
             >
-                {!API_KEY && <NoKeyNotice />}
+                {!API_KEY && <NoKeyNotice labels={labels} />}
 
                 {messages.map((msg, i) => (
-                    <MessageBubble key={i} msg={msg} />
+                    <MessageBubble key={i} msg={msg} labels={labels} />
                 ))}
 
                 {loading && (
@@ -565,7 +602,7 @@ export default function TotalDarknessChat() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKey}
-                    placeholder="Pregunta sobre el lore…"
+                    placeholder={labels.inputPlaceholder}
                     disabled={loading || !API_KEY}
                     rows={1}
                     style={{

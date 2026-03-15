@@ -88,9 +88,14 @@ function isSpanish(text) {
     return /[áéíóúñ¿¡]|\b(que|qué|como|cómo|cuales|cu[aá]les|cual|cu[aá]l|quien|qui[eé]n|capitulos|cap[ií]tulos|lore|personajes|mundo|historia)\b/.test(sample);
 }
 
-function localLoreFallback(userText) {
+function resolveLocale(locale, userText) {
+    if (locale === 'en' || locale === 'es') return locale;
+    return isSpanish(userText) ? 'es' : 'en';
+}
+
+function localLoreFallback(userText, locale) {
     const question = String(userText || '').toLowerCase();
-    const spanish = isSpanish(question);
+    const spanish = resolveLocale(locale, question) === 'es';
 
     if (/que es total darkness|qué es total darkness|what is total darkness/.test(question)) {
         return spanish
@@ -133,25 +138,28 @@ function localLoreFallback(userText) {
         : 'Temporary offline mode: OpenRouter is saturated. From the archives: Total Darkness centers on memory, free will, and a cosmic war against XLERION. Ask about characters (Adapa, Ninhursag, Enki, DumuUl), worlds (Dilmun, Ultima), or tech (TIAMATU ENUMA, Tormenthor Network).';
 }
 
-function buildMessagesForModel(model, messages) {
+function buildMessagesForModel(model, messages, locale) {
     const safeMessages = (messages || []).filter((message) =>
         message && (message.role === 'user' || message.role === 'assistant') && typeof message.content === 'string');
 
     const requiresNoSystemRole = /gemma/i.test(model);
+    const languageInstruction = locale === 'en'
+        ? 'Reply strictly in English.'
+        : 'Responde estrictamente en español.';
 
     if (requiresNoSystemRole) {
         return [
             {
                 role: 'user',
                 content:
-                    `Contexto obligatorio del universo Total Darkness (trátalo como instrucción principal):\n${TD_SYSTEM_PROMPT}`,
+                    `Contexto obligatorio del universo Total Darkness (trátalo como instrucción principal):\n${TD_SYSTEM_PROMPT}\n\n${languageInstruction}`,
             },
             ...safeMessages,
         ];
     }
 
     return [
-        { role: 'system', content: TD_SYSTEM_PROMPT },
+        { role: 'system', content: `${TD_SYSTEM_PROMPT}\n\n${languageInstruction}` },
         ...safeMessages,
     ];
 }
@@ -162,15 +170,16 @@ function buildMessagesForModel(model, messages) {
  * @param {string} apiKey - OpenRouter API key from env
  * @returns {Promise<string>} - The AI response text
  */
-export async function sendChatMessage(messages, apiKey) {
+export async function sendChatMessage(messages, apiKey, locale) {
     if (!apiKey) {
         throw new Error('NO_API_KEY');
     }
 
     const latestUserMessage = [...(messages || [])].reverse().find((message) => message?.role === 'user')?.content || '';
+    const resolvedLocale = resolveLocale(locale, latestUserMessage);
 
     if (Date.now() < rateLimitedUntil) {
-        return localLoreFallback(latestUserMessage);
+        return localLoreFallback(latestUserMessage, resolvedLocale);
     }
 
     let lastError = null;
@@ -188,7 +197,7 @@ export async function sendChatMessage(messages, apiKey) {
                 },
                 body: JSON.stringify({
                     model,
-                    messages: buildMessagesForModel(model, messages),
+                    messages: buildMessagesForModel(model, messages, resolvedLocale),
                     max_tokens: 400,
                     temperature: 0.75,
                 }),
@@ -200,7 +209,7 @@ export async function sendChatMessage(messages, apiKey) {
 
                 const looksLikeUnknownReply = /los registros est[áa]n fragmentados|records are fragmented|a[úu]n no ha sido descifrada|has not been deciphered/i.test(content);
                 if (looksLikeUnknownReply && latestUserMessage) {
-                    return localLoreFallback(latestUserMessage);
+                    return localLoreFallback(latestUserMessage, resolvedLocale);
                 }
 
                 return content;
@@ -247,16 +256,22 @@ export async function sendChatMessage(messages, apiKey) {
     }
 
     if (/guardrail restrictions|data policy|privacy/i.test(lastError || '')) {
-        throw new Error('OpenRouter bloqueó endpoints por tu política de privacidad. Ajusta: https://openrouter.ai/settings/privacy');
+        throw new Error(
+            resolvedLocale === 'es'
+                ? 'OpenRouter bloqueó endpoints por tu política de privacidad. Ajusta: https://openrouter.ai/settings/privacy'
+                : 'OpenRouter blocked endpoints due to your privacy policy. Update it at: https://openrouter.ai/settings/privacy'
+        );
     }
 
     if (/rate-?limit|temporarily rate-limited|retry shortly/i.test(lastError || '')) {
-        return localLoreFallback(latestUserMessage);
+        return localLoreFallback(latestUserMessage, resolvedLocale);
     }
 
     if (sawRateLimit) {
-        return localLoreFallback(latestUserMessage);
+        return localLoreFallback(latestUserMessage, resolvedLocale);
     }
 
-    throw new Error(lastError || 'No hay modelos gratuitos disponibles temporalmente en OpenRouter.');
+    throw new Error(lastError || (resolvedLocale === 'es'
+        ? 'No hay modelos gratuitos disponibles temporalmente en OpenRouter.'
+        : 'No free models are temporarily available on OpenRouter.'));
 }
