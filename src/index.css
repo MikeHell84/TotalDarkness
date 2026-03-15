@@ -1,0 +1,470 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;600;800&family=Roboto+Mono:ital,wght@0,400;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+@font-face {
+  font-family: 'AlphaCentauri';
+  src: local('AlphaCentauri'),
+    local('Alpha Centauri'),
+    url('/fonts/AlphaCentauri.woff2') format('woff2'),
+    url('/fonts/AlphaCentauri.woff') format('woff'),
+    url('/fonts/AlphaCentauri.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes logo-glow-opacity {
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes logo-minimize {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.15);
+    opacity: 1;
+  }
+}
+
+@keyframes logo-fade-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes intro-fade-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes presents-glow-fade {
+  0% {
+    opacity: 0;
+    color: #22d3ee;
+    text-shadow:
+      0 0 0 rgba(0, 229, 229, 0),
+      0 0 0 rgba(93, 253, 253, 0);
+  }
+
+  33.333% {
+    opacity: 1;
+    color: #67e8f9;
+    text-shadow:
+      0 0 20px rgba(0, 229, 229, 0.85),
+      0 0 48px rgba(93, 253, 253, 0.62),
+      0 0 100px rgba(93, 253, 253, 0.42);
+  }
+
+  83.333% {
+    opacity: 1;
+    color: #67e8f9;
+    text-shadow:
+      0 0 20px rgba(0, 229, 229, 0.85),
+      0 0 48px rgba(93, 253, 253, 0.62),
+      0 0 100px rgba(93, 253, 253, 0.42);
+  }
+
+  100% {
+    opacity: 0;
+    color: #000000;
+    text-shadow:
+      0 0 0 rgba(0, 0, 0, 0),
+      0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes logo-fly-through {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0px);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.22);
+    filter: blur(0px);
+  }
+
+  50% {
+    opacity: 0.98;
+    transform: translate3d(0, 0, 0) scale(1.72);
+    filter: blur(0px);
+  }
+
+  75% {
+    opacity: 0.9;
+    transform: translate3d(0, 0, 0) scale(2.8);
+    filter: blur(0.35px);
+  }
+
+  90% {
+    opacity: 0.52;
+    transform: translate3d(0, 0, 0) scale(4.1);
+    filter: blur(1.6px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(5.6);
+    filter: blur(4px);
+  }
+}
+
+@keyframes stars-appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes logo-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes content-appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@layer base {
+
+  html,
+  body,
+  #root {
+    @apply h-full bg-black text-white font-sans;
+    color-scheme: light;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  body {
+    background-color: #000000;
+    color: #FFFFFF;
+    font-family: 'Work Sans', 'Inter', sans-serif;
+    color-scheme: light;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Roboto Mono', monospace;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+  }
+
+  h1 {
+    @apply text-5xl font-black;
+  }
+
+  h2 {
+    @apply text-4xl font-bold;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  canvas,
+  .webgl-canvas {
+    @apply block m-0 p-0;
+  }
+}
+
+@layer components {
+
+  /* Botón Primario */
+  .xl-btn-primary {
+    @apply inline-flex items-center justify-center gap-3 px-10 py-3 bg-primary text-black font-black text-xs uppercase tracking-widest border-2 border-primary rounded-sm transition-all cursor-pointer;
+  }
+
+  .xl-btn-primary:hover {
+    @apply bg-transparent text-primary;
+    box-shadow: 0 0 30px rgba(0, 233, 250, 0.4), inset 0 0 20px rgba(0, 233, 250, 0.1);
+  }
+
+  .xl-btn-primary:active {
+    @apply scale-95;
+  }
+
+  /* Botón Secundario */
+  .xl-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3 bg-secondary text-white font-bold text-xs uppercase tracking-widest border-2 border-secondary rounded-sm transition-all cursor-pointer;
+  }
+
+  .xl-btn-secondary:hover {
+    @apply border-primary text-primary;
+    background-color: rgba(51, 52, 54, 0.5);
+  }
+
+  /* Tarjeta */
+  .xl-card {
+    @apply relative bg-black border border-white/10 p-8 rounded-sm backdrop-blur-md transition-all overflow-hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .xl-card:hover {
+    @apply border-primary/50;
+    box-shadow: 0 0 20px rgba(0, 233, 250, 0.2), inset 0 0 15px rgba(0, 233, 250, 0.05);
+  }
+
+  .xl-card-header {
+    @apply flex items-center gap-4 mb-4 relative z-10;
+  }
+
+  .xl-card-title {
+    font-family: 'Roboto Mono', monospace;
+    @apply text-lg font-bold text-white uppercase italic tracking-tight;
+  }
+
+  .xl-card-body {
+    @apply text-gray-400 text-base leading-relaxed relative z-10;
+  }
+
+  /* Normalize paragraph and list typography inside main service sections
+     - Keep headings (h*) styling intact, but ensure descriptions and list items
+       use the same proportional font and sensible line-height. */
+  .pt-20 p,
+  .pt-20 li,
+  .xl-section p,
+  .xl-card .space-y-2 li,
+  .xl-card .space-y-2 p,
+  .xl-card-body {
+    font-family: 'Work Sans', 'Inter', sans-serif;
+    font-size: 1rem;
+    /* equals text-base */
+    line-height: 1.6;
+    /* comfortable reading */
+    text-align: left;
+  }
+
+  /* If a paragraph accidentally uses the monospace helper class inside
+     a service section, prefer the proportional font for body copy. This
+     keeps headings intentionally monospace while body text remains consistent. */
+  .pt-20 p.font-mono,
+  .xl-section p.font-mono,
+  .xl-card-body.font-mono {
+    font-family: 'Work Sans', 'Inter', sans-serif;
+    font-style: normal;
+  }
+
+  /* Input */
+  .xl-input {
+    @apply w-full bg-white/5 border border-white/10 rounded-sm p-5 text-white text-sm transition-all font-sans;
+  }
+
+  .xl-input::placeholder {
+    @apply text-gray-500;
+  }
+
+  .xl-input:focus {
+    @apply outline-none border-primary bg-primary/5;
+    box-shadow: 0 0 15px rgba(0, 233, 250, 0.2);
+  }
+
+  /* Navbar */
+  .xl-navbar {
+    @apply bg-black border-b border-primary/20 py-4 transition-all;
+  }
+
+  /* Sección */
+  .xl-section {
+    @apply py-20 px-6 max-w-7xl mx-auto;
+  }
+
+  /* Título de sección */
+  .xl-section-title {
+    @apply mb-16 text-left;
+    border-left: 4px solid #00e9fa;
+    @apply pl-6;
+  }
+
+  .xl-section-title h2 {
+    @apply text-4xl md:text-6xl font-black text-white tracking-tighter uppercase font-mono italic;
+  }
+
+  .xl-section-title p {
+    @apply text-primary mt-2 text-sm font-mono tracking-widest uppercase;
+  }
+}
+
+/* Reduce oversized paragraph text that used `text-lg` for descriptions.
+   Target only <p class="text-lg"> so headings (h*) with text-lg are unaffected. */
+@layer components {
+  p.text-lg {
+    @apply text-base leading-relaxed;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+/* Reveal item animation used when sections are randomized */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-item.item-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Modern scroll animations */
+.xl-animate-pending {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.xl-animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.xl-child-animate-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Ensure child elements start hidden only if parent is still pending */
+.xl-animate-pending .xl-card,
+.xl-animate-pending .grid>*,
+.xl-animate-pending .space-y-6>*,
+.xl-animate-pending .space-y-8>*,
+.xl-animate-pending .space-y-12>* {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Show child elements when parent animates in (even without xl-child-animate-in class) */
+.xl-animate-in .xl-card,
+.xl-animate-in .grid>*,
+.xl-animate-in .space-y-6>*,
+.xl-animate-in .space-y-8>*,
+.xl-animate-in .space-y-12>*,
+.xl-animate-in>* {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Normalize headings used as long description blocks inside service sections.
+   Many service pages use <h2> for long descriptive paragraphs; the global
+   h2 rule made these huge, uppercase and monospace. Override those only
+   when the h2 is inside a service section (.pt-20, .xl-section, .border-l-4).
+   Use higher specificity and !important to ensure override of Tailwind
+   utility classes placed on the element. */
+.pt-20 .border-l-4 h2,
+.pt-20 h2,
+.xl-section .border-l-4 h2,
+.xl-section h2,
+.border-l-4 h2 {
+  font-family: 'Work Sans', 'Inter', sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  color: #e6eef0;
+  /* slightly muted white */
+  font-size: 1.125rem !important;
+  /* ~18px */
+  line-height: 1.6 !important;
+}
+
+@media (min-width: 768px) {
+
+  .pt-20 .border-l-4 h2,
+  .pt-20 h2,
+  .xl-section .border-l-4 h2,
+  .xl-section h2,
+  .border-l-4 h2 {
+    font-size: 1.25rem !important;
+    /* ~20px on md+ */
+  }
+}
+
+/* Ensure header intro paragraphs inside service sections show the blue left bar
+   even when the markup didn't include the `border-l-4` wrapper. Also remove
+   restrictive max-width so these intros span the same max container width. */
+.pt-20 header>p,
+.xl-section header>p,
+.pt-20 header>.prose>p {
+  border-left: 4px solid #00e9fa;
+  padding-left: 1.5rem;
+  margin-left: 0;
+  max-width: none;
+  text-align: left;
+}
+
+/* Also target paragraphs that explicitly used max-w-3xl inside headers */
+.pt-20 header p.max-w-3xl,
+.xl-section header p.max-w-3xl {
+  max-width: none;
+}
