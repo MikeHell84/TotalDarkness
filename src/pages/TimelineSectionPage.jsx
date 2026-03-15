@@ -128,12 +128,68 @@ const timelineChapterRightImages = [
     '/images/noticias-eventos-parallax.jpg'
 ];
 
+const defaultChapterTitlesByLang = {
+    es: [
+        'Prólogo',
+        'Capítulo I',
+        'Capítulo II',
+        'Capítulo IV: XLERION',
+        'Capítulo V: LA LUZ DEL SOL',
+        'Capítulo VI: MATAR PARA VIVIR',
+        'Capítulo VII: LA ÚLTIMA PALABRA',
+        'Capítulo VIII: ALMA DE FUEGO',
+        'Capítulo IX: LA GUERRA DE ORGULLO',
+        'Capítulo X: RED TORMENTHOR',
+        'Capítulo XI: OSCURIDAD TOTAL',
+        'Capítulo XII: LA MUERTE DEL GUERRERO'
+    ],
+    en: [
+        'Prologue',
+        'Chapter I',
+        'Chapter II',
+        'Chapter IV: XLERION',
+        'Chapter V: THE LIGHT OF THE SUN',
+        'Chapter VI: KILL TO LIVE',
+        'Chapter VII: THE LAST WORD',
+        'Chapter VIII: SOUL OF FIRE',
+        'Chapter IX: THE WAR OF PRIDE',
+        'Chapter X: RED TORMENTHOR',
+        'Chapter XI: TOTAL DARKNESS',
+        'Chapter XII: THE WARRIOR\'S DEATH'
+    ]
+};
+
+function ensureMinimumChapterTabs(tabs = [], lang = 'es') {
+    const titleList = defaultChapterTitlesByLang[lang] || defaultChapterTitlesByLang.es;
+    const placeholderParagraph = lang === 'en'
+        ? 'English chapter body is loading. If the content feed is unavailable, this chapter remains listed and ready.'
+        : 'El contenido del capítulo se está cargando. Si la fuente no está disponible, este capítulo se mantiene listado.';
+
+    const completed = [...tabs];
+
+    for (let index = completed.length; index < titleList.length; index += 1) {
+        const title = titleList[index];
+        completed.push({
+            title,
+            label: title,
+            paragraphs: [placeholderParagraph],
+            centerImage: '/images/documentacion-parallax.jpg',
+            leftImage: '/images/filosofia-parallax.jpg',
+            rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
+        });
+    }
+
+    return completed;
+}
+
 function getStaticTabs(lang = 'es') {
     const tabs = timelineTabsByLang[lang] || timelineTabsByLang.es;
-    return tabs.map((tab, index) => ({
+    const mappedTabs = tabs.map((tab, index) => ({
         ...tab,
         rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
     }));
+
+    return ensureMinimumChapterTabs(mappedTabs, lang);
 }
 
 const chapterTextDictionary = {
@@ -197,7 +253,7 @@ function descriptionToParagraphs(description) {
 function mapDataToTabs(chapters = [], lang = 'es') {
     const staticTabs = getStaticTabs(lang);
 
-    return chapters.map((chapter, index) => {
+    const mappedTabs = chapters.map((chapter, index) => {
         const fallbackTitle = lang === 'en' ? `Chapter ${index + 1}` : `Capítulo ${index + 1}`;
         const sourceTitle = normalizeTitle(chapter?.name, fallbackTitle);
         const title = localizeChapterTitle(sourceTitle, lang);
@@ -215,6 +271,8 @@ function mapDataToTabs(chapters = [], lang = 'es') {
             rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
         };
     });
+
+    return ensureMinimumChapterTabs(mappedTabs, lang);
 }
 
 export default function TimelineSectionPage() {
