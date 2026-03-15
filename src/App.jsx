@@ -570,7 +570,7 @@ export default function App() {
   const panelPowerOnDoneTimeoutRef = useRef(null);
   const userHasInteractedRef = useRef(false);
   const dragVelocityRef = useRef({ theta: 0, phi: 0 });
-  const gyroBaselineRef = useRef({ beta: null, gamma: null });
+  const gyroBaselineRef = useRef({ beta: null, gamma: null, lastBeta: null, lastGamma: null });
 
   React.useEffect(() => {
     if (activeSection !== 'cronologia') {
@@ -633,21 +633,33 @@ export default function App() {
       const gamma = event.gamma;
       if (!Number.isFinite(beta) || !Number.isFinite(gamma)) return;
 
+      // Set baseline on first reading after entering home
       if (gyroBaselineRef.current.beta === null || gyroBaselineRef.current.gamma === null) {
-        gyroBaselineRef.current = { beta, gamma };
+        gyroBaselineRef.current = { beta, gamma, lastBeta: beta, lastGamma: gamma };
+        return;
       }
 
-      const baselineBeta = gyroBaselineRef.current.beta ?? beta;
-      const baselineGamma = gyroBaselineRef.current.gamma ?? gamma;
+      // Calculate delta from last reading to get smooth incremental rotation
+      const lastBeta = gyroBaselineRef.current.lastBeta ?? beta;
+      const lastGamma = gyroBaselineRef.current.lastGamma ?? gamma;
 
-      const clampedGamma = Math.max(-45, Math.min(45, gamma - baselineGamma));
-      const clampedBeta = Math.max(-35, Math.min(35, beta - baselineBeta));
+      // Clamp individual deltas to avoid jumps
+      const rawDeltaGamma = gamma - lastGamma;
+      const rawDeltaBeta = beta - lastBeta;
 
-      const targetTheta = universeCameraSnapshotRef.current.theta + clampedGamma * 0.015;
-      const targetPhi = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, universeCameraSnapshotRef.current.phi + clampedBeta * 0.01));
+      // Ignore large jumps (e.g. gimbal lock crossing)
+      if (Math.abs(rawDeltaGamma) > 20 || Math.abs(rawDeltaBeta) > 20) {
+        gyroBaselineRef.current.lastBeta = beta;
+        gyroBaselineRef.current.lastGamma = gamma;
+        return;
+      }
 
-      rotation.theta += (targetTheta - rotation.theta) * 0.2;
-      rotation.phi += (targetPhi - rotation.phi) * 0.2;
+      gyroBaselineRef.current.lastBeta = beta;
+      gyroBaselineRef.current.lastGamma = gamma;
+
+      const sensitivity = 0.012;
+      rotation.theta += rawDeltaGamma * sensitivity;
+      rotation.phi = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, rotation.phi + rawDeltaBeta * sensitivity));
 
       dragVelocityRef.current.theta = 0;
       dragVelocityRef.current.phi = 0;
@@ -662,7 +674,7 @@ export default function App() {
 
   React.useEffect(() => {
     if (showIntro || activeSection || isTransitioning) {
-      gyroBaselineRef.current = { beta: null, gamma: null };
+      gyroBaselineRef.current = { beta: null, gamma: null, lastBeta: null, lastGamma: null };
     }
   }, [showIntro, activeSection, isTransitioning]);
 
