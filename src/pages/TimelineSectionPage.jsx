@@ -159,12 +159,40 @@ const defaultChapterTitlesByLang = {
     ]
 };
 
+const defaultChapterFallbackParagraphs = {
+    es: [
+        'Bitácora inicial de Adamu y comienzo del ciclo.',
+        'Nacimiento del orden, la plaga y el libre albedrío.',
+        'Dilmun, prueba divina y el quiebre del destino.',
+        'Memoria rota, guerra total y aparición de XLERION.',
+        'Tras la ruina, una luz guía a los últimos sobrevivientes.',
+        'La supervivencia exige combate y decisiones extremas.',
+        'Las últimas decisiones cambian el futuro del universo.',
+        'Renace el fuego interior: resistencia en medio del colapso.',
+        'Orgullo, pérdida y una guerra sin retorno.',
+        'Se activa Red Tormenthor: dominio y control final.',
+        'Oscuridad total: la última fase del conflicto.',
+        'Cierre del ciclo y legado del último guerrero.'
+    ],
+    en: [
+        'Adamu\'s first log and the start of the cycle.',
+        'Birth of order, the plague, and free will.',
+        'Dilmun, the divine trial, and the fracture of destiny.',
+        'Broken memory, total war, and XLERION\'s emergence.',
+        'After ruin, a final light guides the survivors.',
+        'Survival demands combat and irreversible choices.',
+        'Final decisions reshape the fate of the universe.',
+        'Inner fire rises: resistance amid collapse.',
+        'Pride, loss, and a war beyond return.',
+        'Red Tormenthor activates: endgame control and domination.',
+        'Total darkness: the final phase of conflict.',
+        'The cycle closes and the last warrior\'s legacy remains.'
+    ]
+};
+
 function ensureMinimumChapterTabs(tabs = [], lang = 'es') {
     const titleList = defaultChapterTitlesByLang[lang] || defaultChapterTitlesByLang.es;
-    const placeholderParagraph = lang === 'en'
-        ? 'English chapter body is loading. If the content feed is unavailable, this chapter remains listed and ready.'
-        : 'El contenido del capítulo se está cargando. Si la fuente no está disponible, este capítulo se mantiene listado.';
-
+    const fallbackParagraphs = defaultChapterFallbackParagraphs[lang] || defaultChapterFallbackParagraphs.es;
     const completed = [...tabs];
 
     for (let index = completed.length; index < titleList.length; index += 1) {
@@ -172,7 +200,7 @@ function ensureMinimumChapterTabs(tabs = [], lang = 'es') {
         completed.push({
             title,
             label: title,
-            paragraphs: [placeholderParagraph],
+            paragraphs: [fallbackParagraphs[index] || fallbackParagraphs[fallbackParagraphs.length - 1]],
             centerImage: '/images/documentacion-parallax.jpg',
             leftImage: '/images/filosofia-parallax.jpg',
             rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
@@ -304,11 +332,24 @@ export default function TimelineSectionPage() {
 
         const loadChapters = async () => {
             try {
-                const response = await fetch('/total-darkness/data.json', { cache: 'no-store' });
-                if (!response.ok) return;
+                const candidateUrls = ['/total-darkness/data.json', 'total-darkness/data.json', '/public/total-darkness/data.json'];
+                let chapters = [];
 
-                const data = await response.json();
-                const chapters = Array.isArray(data?.[0]?.chapters) ? data[0].chapters : [];
+                for (const url of candidateUrls) {
+                    try {
+                        const response = await fetch(url, { cache: 'no-store' });
+                        if (!response.ok) continue;
+
+                        const data = await response.json();
+                        const parsed = Array.isArray(data?.[0]?.chapters) ? data[0].chapters : [];
+                        if (parsed.length > 0) {
+                            chapters = parsed;
+                            break;
+                        }
+                    } catch {
+                    }
+                }
+
                 if (!chapters.length) return;
 
                 const mappedTabs = mapDataToTabs(chapters, lang);

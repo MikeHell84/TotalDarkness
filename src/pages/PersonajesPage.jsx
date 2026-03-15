@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 const floatingStyles = `
     @keyframes floatLeft {
@@ -211,6 +212,65 @@ const CHARACTER_SKILL_MAPS = {
     }
 };
 
+const CHARACTER_TEXT_EN = {
+    'Adapa': 'First human and axis of free will. His choice before the sacred herbs breaks the original pact and triggers the fall of Dilmun.',
+    'Ninhursag (Ninti)': 'Mother of creation and fragmented memory. She represents love, continuity, and sacrifice. Her legacy survives within human clans.',
+    'Enki': 'Observing god and executor of punishment. He tests universal law, decrees exile, and marks the beginning of human suffering.',
+    'DumuUl': 'Bearer of the code in the final era. Heir to ancient visions, he faces the war against XLERION and the cycle of the end.',
+    'XLERION': 'Entity born from greed and corruption. A dark will seeking to rewrite the universe through the Red Tormenthor Project.'
+};
+
+const ARCHETYPE_EN = {
+    'Balance / Libre Albedrío': 'Balance / Free Will',
+    'Support / Creación': 'Support / Creation',
+    'Control / Juicio': 'Control / Judgment',
+    'Táctico / Resistencia': 'Tactical / Resilience',
+    'Corruptor / Dominio': 'Corruptor / Dominion'
+};
+
+const NODE_LABEL_EN = {
+    'Origen': 'Origin',
+    'Voluntad': 'Will',
+    'Discernir': 'Discern',
+    'Empatía': 'Empathy',
+    'Ruptura': 'Rupture',
+    'Legado': 'Legacy',
+    'Matriz': 'Matrix',
+    'Cuidado': 'Care',
+    'Savia': 'Sap',
+    'Memoria': 'Memory',
+    'Resurgir': 'Resurge',
+    'Madre-Raíz': 'Mother-Root',
+    'Observador': 'Observer',
+    'Prueba': 'Trial',
+    'Veredicto': 'Verdict',
+    'Exilio': 'Exile',
+    'Sello': 'Seal',
+    'Heredero': 'Heir',
+    'Rastreo': 'Tracking',
+    'Pulso': 'Pulse',
+    'Cacería': 'Hunt',
+    'Último Ciclo': 'Last Cycle',
+    'Núcleo': 'Core',
+    'Infección': 'Infection',
+    'Mimetismo': 'Mimicry',
+    'Tormenta': 'Storm',
+    'Subyugar': 'Subjugate'
+};
+
+function localizeSkillProfile(profile, lang) {
+    if (!profile || lang !== 'en') return profile;
+
+    return {
+        ...profile,
+        archetype: ARCHETYPE_EN[profile.archetype] || profile.archetype,
+        nodes: (profile.nodes || []).map((node) => ({
+            ...node,
+            label: NODE_LABEL_EN[node.label] || node.label
+        }))
+    };
+}
+
 function toRunicText(text) {
     return text
         .split('')
@@ -309,7 +369,7 @@ function MatrixRain({ columns = 15, speed = 50 }) {
     );
 }
 
-function CharacterSkillMap({ profile }) {
+function CharacterSkillMap({ profile, lang = 'es' }) {
     const [hoveredNodeId, setHoveredNodeId] = useState(null);
     const [pinnedNodeId, setPinnedNodeId] = useState(null);
     const nodes = profile?.nodes || [];
@@ -377,10 +437,14 @@ function CharacterSkillMap({ profile }) {
         return '#5dfdfd';
     };
 
+    const uiText = lang === 'en'
+        ? { skillMap: 'Skill Map', profile: 'Profile', type: 'Type', level: 'Level' }
+        : { skillMap: 'Mapa de habilidades', profile: 'Perfil', type: 'Tipo', level: 'Nivel' };
+
     return (
         <div style={{ position: 'absolute', inset: 14, zIndex: 6, display: 'flex', flexDirection: 'column', pointerEvents: 'auto' }}>
             <div style={{ color: '#00e5e5', fontSize: 11, textTransform: 'uppercase', letterSpacing: 1.1, marginBottom: 8, textShadow: '0 0 10px rgba(0,229,229,0.55)' }}>
-                Skill Map · {profile?.archetype || 'Profile'}
+                {uiText.skillMap} · {profile?.archetype || uiText.profile}
             </div>
 
             <div
@@ -467,10 +531,10 @@ function CharacterSkillMap({ profile }) {
                             {hoveredNode.label}
                         </div>
                         <div style={{ color: '#b8f6ff', fontSize: 9, fontFamily: 'Work Sans, Inter, sans-serif', lineHeight: 1.35 }}>
-                            Tipo: {getNodeTypeLabel(hoveredNode.type)}
+                            {uiText.type}: {getNodeTypeLabel(hoveredNode.type)}
                         </div>
                         <div style={{ color: '#b8f6ff', fontSize: 9, fontFamily: 'Work Sans, Inter, sans-serif', lineHeight: 1.35 }}>
-                            Nivel: {hoveredNode.level}
+                            {uiText.level}: {hoveredNode.level}
                         </div>
                     </div>
                 )}
@@ -481,14 +545,27 @@ function CharacterSkillMap({ profile }) {
 }
 
 export default function PersonajesPage() {
+    const { lang } = useLanguage();
     const [index, setIndex] = useState(0);
     const [booting, setBooting] = useState(true);
     const [showRunicSubtitle, setShowRunicSubtitle] = useState(false);
     const [buttonGlitches, setButtonGlitches] = useState({});
     const [pressedCenter, setPressedCenter] = useState(false);
     const [viewportWidth, setViewportWidth] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1366));
-    const section = CHARACTERS[index];
-    const skillProfile = CHARACTER_SKILL_MAPS[section.title] || CHARACTER_SKILL_MAPS['Adapa'];
+    const localizedCharacters = React.useMemo(
+        () => CHARACTERS.map((character) => ({
+            ...character,
+            text: lang === 'en' ? (CHARACTER_TEXT_EN[character.title] || character.text) : character.text
+        })),
+        [lang]
+    );
+
+    const section = localizedCharacters[index];
+    const baseSkillProfile = CHARACTER_SKILL_MAPS[CHARACTERS[index].title] || CHARACTER_SKILL_MAPS['Adapa'];
+    const skillProfile = React.useMemo(
+        () => localizeSkillProfile(baseSkillProfile, lang),
+        [baseSkillProfile, lang]
+    );
 
     const isTablet = viewportWidth < 1320;
     const isMobile = viewportWidth < 1024;
@@ -564,7 +641,7 @@ export default function PersonajesPage() {
                             <MatrixRain key={`left-${index}`} columns={12} speed={45} />
 
                             <div style={{ position: 'absolute', inset: 12, zIndex: 20, display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center', pointerEvents: 'auto' }}>
-                                {CHARACTERS.map((character, btnIdx) => (
+                                {localizedCharacters.map((character, btnIdx) => (
                                     <div
                                         key={`left-${character.title}`}
                                         onClick={() => {
@@ -620,7 +697,7 @@ export default function PersonajesPage() {
 
                         {isMobile && (
                             <div style={{ position: 'relative', zIndex: 15, display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12, marginTop: 30 }}>
-                                {CHARACTERS.map((character, btnIdx) => (
+                                {localizedCharacters.map((character, btnIdx) => (
                                     <div
                                         key={`mobile-${character.title}`}
                                         onClick={() => {
@@ -675,7 +752,7 @@ export default function PersonajesPage() {
                             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'repeating-linear-gradient(to bottom, rgba(0,229,229,0.08) 0px, rgba(0,229,229,0.08) 1px, rgba(0,0,0,0) 3px, rgba(0,0,0,0) 6px)', opacity: booting ? 0.72 : 0.18, transition: 'opacity 620ms ease' }} />
                             <div style={{ position: 'absolute', left: 0, right: 0, height: 62, top: booting ? '-24%' : '130%', pointerEvents: 'none', background: 'linear-gradient(to bottom, rgba(0,229,229,0) 0%, rgba(0,229,229,0.4) 50%, rgba(0,229,229,0) 100%)', transition: 'top 780ms ease' }} />
                             <div style={{ position: 'absolute', inset: 10, border: '1px solid rgba(0,229,229,0.38)', borderRadius: 10, boxShadow: 'inset 0 0 18px rgba(0,229,229,0.2)' }} />
-                            <CharacterSkillMap key={section.title} profile={skillProfile} />
+                            <CharacterSkillMap key={section.title} profile={skillProfile} lang={lang} />
                             <div className="signal-noise" style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1px, rgba(255,255,255,0.04) 2px, rgba(0,0,0,0) 4px)' }} />
                             <div className="signal-shift" style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none', background: 'linear-gradient(90deg, rgba(255,0,120,0.08) 0%, rgba(0,229,229,0.12) 48%, rgba(0,0,0,0) 100%)', mixBlendMode: 'screen' }} />
                             <div className="signal-flicker" style={{ position: 'absolute', inset: 0, zIndex: 4, pointerEvents: 'none', background: 'radial-gradient(circle at 50% 45%, rgba(0,229,229,0.2) 0%, rgba(0,0,0,0.28) 62%, rgba(0,0,0,0.5) 100%)' }} />
