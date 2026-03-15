@@ -39,4 +39,6 @@ public/total-darkness/.env
 *.zip
 
 # Files above GitHub hard limit (100MB)
+assets/audio/
 assets/audio/Soul of Fire - Redemthor.wav
+
