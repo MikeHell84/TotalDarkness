@@ -2194,13 +2194,13 @@ export default function App() {
           </div>
         )}
 
-        <div className="fixed right-3 top-3 md:right-6 md:top-6 z-[80] pointer-events-auto">
+        <div className="fixed right-3 top-[max(10px,env(safe-area-inset-top))] md:right-6 md:top-6 z-[95] pointer-events-auto">
           <button
             type="button"
             onClick={() => setIsSoundSettingsOpen((prev) => !prev)}
             aria-label={t('soundSettings')}
             title={t('soundSettings')}
-            className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center gap-1 border border-cyan-400/70 text-cyan-200 bg-black/60 backdrop-blur-md hover:bg-black/75 transition-colors rounded-full"
+            className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center gap-1 border border-cyan-300/90 text-cyan-100 bg-black/75 backdrop-blur-md hover:bg-black/90 transition-colors rounded-full shadow-[0_0_16px_rgba(34,211,238,0.35)]"
           >
             <span className="text-base leading-none" aria-hidden="true">{isMusicMuted ? '🔇' : '🔊'}</span>
             <span className="text-sm leading-none" aria-hidden="true">⚙️</span>
