@@ -146,6 +146,21 @@ const chapterTextDictionary = {
     'Abrir menú de capítulos': 'Open chapter menu'
 };
 
+const chapterTitleDictionary = {
+    'PROLOGO - CADA FIN TIENE UN COMIENZO': 'PROLOGUE - EVERY END HAS A BEGINNING',
+    'Capitulo II: MULTIPLES ORIGENES': 'Chapter II: MULTIPLE ORIGINS',
+    'Capitulo III: ELECCIÓN O DESTINO?': 'Chapter III: CHOICE OR DESTINY?',
+    'Capítulo IV: XLERION': 'Chapter IV: XLERION',
+    'Capítulo V: LA LUZ DEL SOL': 'Chapter V: THE LIGHT OF THE SUN',
+    'Capítulo VI: MATAR PARA VIVIR': 'Chapter VI: KILL TO LIVE',
+    'Capítulo VII: LA ÚLTIMA PALABRA': 'Chapter VII: THE LAST WORD',
+    'Capitulo VIII: Alma de Fuego': 'Chapter VIII: Soul of Fire',
+    'Capítulo IX: La Guerra de Orgullo': 'Chapter IX: The War of Pride',
+    'Capítulo X: RED TORMENTHOR': 'Chapter X: RED TORMENTHOR',
+    'Capítulo XI: OSCURIDAD TOTAL': 'Chapter XI: TOTAL DARKNESS',
+    'Capitulo XII: La Muerte del guerrero': "Chapter XII: The Warrior's Death"
+};
+
 function localizeChapterText(text, lang) {
     if (lang !== 'en' || !text) return text;
 
@@ -154,6 +169,15 @@ function localizeChapterText(text, lang) {
         localized = localized.replaceAll(esText, enText);
     });
     return localized;
+}
+
+function localizeChapterTitle(text, lang) {
+    if (!text) return text;
+    const normalized = normalizeTitle(String(text));
+    if (lang === 'en' && chapterTitleDictionary[normalized]) {
+        return chapterTitleDictionary[normalized];
+    }
+    return localizeChapterText(normalized, lang);
 }
 
 function normalizeTitle(value, fallback = '') {
@@ -171,13 +195,21 @@ function descriptionToParagraphs(description) {
 }
 
 function mapDataToTabs(chapters = [], lang = 'es') {
+    const staticTabs = getStaticTabs(lang);
+
     return chapters.map((chapter, index) => {
         const fallbackTitle = lang === 'en' ? `Chapter ${index + 1}` : `Capítulo ${index + 1}`;
-        const title = normalizeTitle(chapter?.name, fallbackTitle);
+        const sourceTitle = normalizeTitle(chapter?.name, fallbackTitle);
+        const title = localizeChapterTitle(sourceTitle, lang);
+        const fallbackStaticParagraphs = staticTabs[index]?.paragraphs || [];
+        const mappedParagraphs = descriptionToParagraphs(chapter?.description);
+
         return {
             title,
             label: title,
-            paragraphs: descriptionToParagraphs(chapter?.description),
+            paragraphs: lang === 'en' && fallbackStaticParagraphs.length > 0
+                ? fallbackStaticParagraphs
+                : mappedParagraphs,
             centerImage: chapter?.image || '/images/documentacion-parallax.jpg',
             leftImage: '/images/filosofia-parallax.jpg',
             rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
@@ -211,12 +243,6 @@ export default function TimelineSectionPage() {
 
         // Reset to the correct static fallback immediately before the async fetch
         setTabsData(getStaticTabs(lang));
-
-        if (lang !== 'es') {
-            return () => {
-                isMounted = false;
-            };
-        }
 
         const loadChapters = async () => {
             try {
