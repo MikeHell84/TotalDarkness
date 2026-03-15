@@ -39,8 +39,9 @@ export default defineConfig({
             if (id.includes('katex')) return 'katex-vendor';
             if (id.includes('mermaid')) return 'mermaid-vendor';
             if (id.includes('lucide-react')) return 'ui-vendor';
-            // fallback: put other node_modules into a vendors chunk
-            return 'vendor';
+            // Leave other dependencies to Rollup's default chunk strategy.
+            // A catch-all vendor bucket can create circular chunk graphs in prod.
+            return undefined;
           }
         },
         // Nombre de archivos con hash para cache busting
