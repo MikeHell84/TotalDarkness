@@ -2194,89 +2194,87 @@ export default function App() {
           </div>
         )}
 
-        {language && (
-          <div className="fixed right-3 top-3 md:right-6 md:top-6 z-[80] pointer-events-auto">
-            <button
-              type="button"
-              onClick={() => setIsSoundSettingsOpen((prev) => !prev)}
-              aria-label={t('soundSettings')}
-              title={t('soundSettings')}
-              className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center gap-1 border border-cyan-400/70 text-cyan-200 bg-black/60 backdrop-blur-md hover:bg-black/75 transition-colors rounded-full"
-            >
-              <span className="text-base leading-none" aria-hidden="true">{isMusicMuted ? '🔇' : '🔊'}</span>
-              <span className="text-sm leading-none" aria-hidden="true">⚙️</span>
-            </button>
+        <div className="fixed right-3 top-3 md:right-6 md:top-6 z-[80] pointer-events-auto">
+          <button
+            type="button"
+            onClick={() => setIsSoundSettingsOpen((prev) => !prev)}
+            aria-label={t('soundSettings')}
+            title={t('soundSettings')}
+            className="w-11 h-11 md:w-12 md:h-12 flex items-center justify-center gap-1 border border-cyan-400/70 text-cyan-200 bg-black/60 backdrop-blur-md hover:bg-black/75 transition-colors rounded-full"
+          >
+            <span className="text-base leading-none" aria-hidden="true">{isMusicMuted ? '🔇' : '🔊'}</span>
+            <span className="text-sm leading-none" aria-hidden="true">⚙️</span>
+          </button>
 
-            {isSoundSettingsOpen && (
-              <div className="mt-2 w-[88vw] max-w-xs md:max-w-sm rounded-md border border-cyan-400/70 bg-black/80 backdrop-blur-md p-3 shadow-[0_0_18px_rgba(0,229,229,0.25)]">
-                <div className="flex items-center justify-between text-cyan-200 text-[11px] md:text-xs uppercase tracking-[0.08em] mb-2">
-                  <span>{t('volume')}</span>
-                  <span>{Math.round(globalMusicVolume * 100)}%</span>
-                </div>
-
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={globalMusicVolume}
-                  onChange={(event) => setGlobalMusicVolume(Number(event.target.value))}
-                  className="w-full accent-cyan-400 mb-3"
-                />
-
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsMusicMuted((prev) => !prev)}
-                    aria-label={isMusicMuted ? t('unmute') : t('mute')}
-                    title={isMusicMuted ? t('unmute') : t('mute')}
-                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
-                  >
-                    {isMusicMuted ? '🔊' : '🔇'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={playCurrentMusic}
-                    aria-label={t('play')}
-                    title={t('play')}
-                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
-                  >
-                    ▶
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={pauseAllMusic}
-                    aria-label={t('pause')}
-                    title={t('pause')}
-                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
-                  >
-                    ⏸
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={stopAllMusic}
-                    aria-label={t('stop')}
-                    title={t('stop')}
-                    className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
-                  >
-                    ⏹
-                  </button>
-                </div>
-
-                <p className="mt-3 text-[10px] md:text-[11px] text-zinc-400 leading-snug">
-                  {currentTrackRightsText}
-                </p>
-
-                <p className="mt-1 text-[10px] md:text-[11px] text-zinc-500 text-center">
-                  {isMusicPaused ? '⏸' : '▶'}
-                </p>
+          {isSoundSettingsOpen && (
+            <div className="mt-2 w-[88vw] max-w-xs md:max-w-sm rounded-md border border-cyan-400/70 bg-black/80 backdrop-blur-md p-3 shadow-[0_0_18px_rgba(0,229,229,0.25)]">
+              <div className="flex items-center justify-between text-cyan-200 text-[11px] md:text-xs uppercase tracking-[0.08em] mb-2">
+                <span>{t('volume')}</span>
+                <span>{Math.round(globalMusicVolume * 100)}%</span>
               </div>
-            )}
-          </div>
-        )}
+
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={globalMusicVolume}
+                onChange={(event) => setGlobalMusicVolume(Number(event.target.value))}
+                className="w-full accent-cyan-400 mb-3"
+              />
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsMusicMuted((prev) => !prev)}
+                  aria-label={isMusicMuted ? t('unmute') : t('mute')}
+                  title={isMusicMuted ? t('unmute') : t('mute')}
+                  className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                >
+                  {isMusicMuted ? '🔊' : '🔇'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={playCurrentMusic}
+                  aria-label={t('play')}
+                  title={t('play')}
+                  className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                >
+                  ▶
+                </button>
+
+                <button
+                  type="button"
+                  onClick={pauseAllMusic}
+                  aria-label={t('pause')}
+                  title={t('pause')}
+                  className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                >
+                  ⏸
+                </button>
+
+                <button
+                  type="button"
+                  onClick={stopAllMusic}
+                  aria-label={t('stop')}
+                  title={t('stop')}
+                  className="px-2 py-2 text-lg border border-cyan-400/60 text-cyan-200 hover:bg-cyan-500/10 transition-colors rounded flex items-center justify-center"
+                >
+                  ⏹
+                </button>
+              </div>
+
+              <p className="mt-3 text-[10px] md:text-[11px] text-zinc-400 leading-snug">
+                {currentTrackRightsText}
+              </p>
+
+              <p className="mt-1 text-[10px] md:text-[11px] text-zinc-500 text-center">
+                {isMusicPaused ? '⏸' : '▶'}
+              </p>
+            </div>
+          )}
+        </div>
 
         {isMobileDevice && !showIntro && !activeSection && !isGyroEnabled && (
           <div className="fixed right-3 top-[62px] z-[80] pointer-events-auto">
