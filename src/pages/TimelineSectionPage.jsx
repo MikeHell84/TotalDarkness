@@ -212,6 +212,12 @@ export default function TimelineSectionPage() {
         // Reset to the correct static fallback immediately before the async fetch
         setTabsData(getStaticTabs(lang));
 
+        if (lang !== 'es') {
+            return () => {
+                isMounted = false;
+            };
+        }
+
         const loadChapters = async () => {
             try {
                 const response = await fetch('/total-darkness/data.json', { cache: 'no-store' });
