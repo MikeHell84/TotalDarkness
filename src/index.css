@@ -2,11 +2,9 @@
 
 @font-face {
   font-family: 'AlphaCentauri';
+  /* Font files not bundled — uses local install if present, falls back to Orbitron */
   src: local('AlphaCentauri'),
-    local('Alpha Centauri'),
-    url('/fonts/AlphaCentauri.woff2') format('woff2'),
-    url('/fonts/AlphaCentauri.woff') format('woff'),
-    url('/fonts/AlphaCentauri.ttf') format('truetype');
+    local('Alpha Centauri');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

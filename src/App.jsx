@@ -11,6 +11,490 @@ import TimelineView, { TimelineConnections, TimelineCamera } from './pages/Timel
 import TotalDarknessChat from './components/TotalDarknessChat';
 import TimelineSectionPage from './pages/TimelineSectionPage';
 
+// ─── Bilingual tab data for SectionStructurePage (Historia + Vision) ──────────
+const HISTORIA_TABS = {
+  es: [
+    {
+      title: 'Premisa',
+      label: 'Premisa',
+      paragraphs: [
+        'Total Darkness presenta una epopeya de ciencia ficción oscura donde la memoria del universo se fragmenta y la verdad se vuelve un campo de batalla.',
+        'La propuesta narrativa parte de una premisa clara: cuanto más poder obtiene la humanidad, más cerca está de repetir la caída original.',
+        'En lugar de separar mito y tecnología, la saga los fusiona como dos lenguajes del mismo trauma colectivo: uno recuerda el origen, el otro acelera la destrucción.'
+      ],
+      metaChips: ['setup', 'misterio cosmológico', 'tono trágico'],
+      beatPoints: [
+        'Se detectan anomalías en archivos ancestrales y redes de vigilancia orbital.',
+        'La investigación revela una verdad prohibida sobre el pacto fundador de Dilmun.',
+        'La humanidad entiende que su ascenso tecnológico podría ser el gatillo de su segunda caída.'
+      ],
+      quote: 'No luchamos por conquistar el futuro; luchamos por merecer memoria en él.',
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/universback.jpg',
+      rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
+    },
+    {
+      title: 'Mundo y reglas',
+      label: 'Mundo',
+      paragraphs: [
+        'El universo combina ruinas sumerias, tecnología prohibida y territorios deformados por energía cosmológica.',
+        'Sus reglas dramáticas se sostienen en tres ejes: pacto ancestral, libre albedrío y costo espiritual de cada decisión.',
+        'Las zonas vivas del mapa reaccionan a decisiones morales: el entorno no es decorado, es un juez silencioso que registra cada elección.'
+      ],
+      metaChips: ['worldbuilding', 'leyes del mundo', 'riesgo sistémico'],
+      beatPoints: [
+        'La energía cosmológica altera geografía, clima y percepción temporal en regiones críticas.',
+        'Los rituales antiguos funcionan como protocolos de control, no como magia arbitraria.',
+        'Toda ventaja de poder conlleva deuda ética y erosión de identidad.'
+      ],
+      quote: 'Cada regla del mundo fue escrita con sangre, y cada excepción exige otro sacrificio.',
+      centerImage: '/assets/parallax/proyectos-parallax.jpg',
+      leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+      rightImage: '/assets/parallax/Oficina0013.jpg'
+    },
+    {
+      title: 'Personajes y facciones',
+      label: 'Facciones',
+      paragraphs: [
+        'Héroes caídos, entidades antiguas y órdenes tecnocráticas compiten por definir qué significa "salvar" la realidad.',
+        'Cada facción encarna una visión moral distinta, y su choque impulsa alianzas frágiles, traiciones y arcos personales complejos.',
+        'Los protagonistas no solo combaten enemigos externos: disputan su propia identidad frente a memorias implantadas, linajes rotos y promesas imposibles de cumplir.'
+      ],
+      metaChips: ['arcos de personaje', 'facciones', 'choque ideológico'],
+      beatPoints: [
+        'Una alianza táctica surge para frenar una amenaza mayor, pese a agendas incompatibles.',
+        'La traición de un actor clave redefine el mapa político y emocional.',
+        'El grupo central se fractura cuando el precio de la victoria exige una pérdida íntima.'
+      ],
+      quote: 'En Total Darkness, nadie es puro: todos son la suma de lo que juraron y lo que traicionaron.',
+      centerImage: '/assets/parallax/fundador-parallax.jpg',
+      leftImage: '/assets/parallax/proyectos-parallax.jpg',
+      rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
+    },
+    {
+      title: 'Conflicto y apuestas',
+      label: 'Conflicto',
+      paragraphs: [
+        'La caída de Dilmun y el gran diluvio rompen el equilibrio: ahora la guerra no es por territorio, sino por el control del destino humano.',
+        'Las apuestas escalan desde la supervivencia de ciudades hasta la posible extinción de la memoria colectiva del universo.',
+        'La narrativa evita el "bien contra mal" plano: cada bando protege algo legítimo y destruye algo irremplazable al mismo tiempo.'
+      ],
+      metaChips: ['stakes', 'guerra de destino', 'ambigüedad moral'],
+      beatPoints: [
+        'El conflicto local se transforma en crisis civilizatoria cuando caen los nodos de memoria.',
+        'La guerra se expande a planos simbólicos y tecnológicos, colapsando fronteras tradicionales.',
+        'Las decisiones estratégicas comienzan a borrar historia, no solo vidas.'
+      ],
+      quote: 'Perder una ciudad duele; perder la memoria de por qué existía, condena.',
+      centerImage: '/assets/parallax/soluciones-parallax.jpg',
+      leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+      rightImage: '/assets/parallax/universe360.png'
+    },
+    {
+      title: 'Progresión narrativa',
+      label: 'Progresión',
+      paragraphs: [
+        'La historia avanza en ritmo de tres actos: inicio del quiebre, confrontación con múltiples crisis y punto de no retorno.',
+        'Cada etapa abre nuevas preguntas, eleva el costo emocional de los personajes y prepara el terreno para la confrontación final.',
+        'La estructura combina progresión lineal con capas de revelación: lo que parecía contexto se vuelve detonador, y lo que parecía victoria se revela como deuda.'
+      ],
+      metaChips: ['estructura en actos', 'escalada', 'revelaciones'],
+      beatPoints: [
+        'Acto I: detonación del quiebre y establecimiento del objetivo narrativo.',
+        'Acto II: acumulación de crisis, pérdidas tácticas y cambio de paradigma.',
+        'Acto III: convergencia de líneas narrativas en una decisión irreversible.'
+      ],
+      quote: 'Aquí no hay relleno: cada capítulo adelanta conflicto, identidad o precio.',
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/universback.jpg',
+      rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
+    },
+    {
+      title: 'Clímax y legado',
+      label: 'Clímax',
+      paragraphs: [
+        'El clímax enfrenta humanidad y corrupción cósmica en una decisión irreversible donde ganar también implica perder algo esencial.',
+        'El cierre deja un nuevo orden frágil: hay resolución del conflicto central, pero también semillas narrativas para futuras expansiones.',
+        'El legado no se mide por quién sobrevive, sino por qué verdad logra conservarse cuando todo el sistema exige olvidar.'
+      ],
+      metaChips: ['clímax', 'resolución', 'legado transmedia'],
+      beatPoints: [
+        'Confrontación final entre doctrina de control absoluto y defensa del libre albedrío.',
+        'Sacrificio mayor que redefine la identidad de los sobrevivientes.',
+        'Nuevo statu quo inestable, con rutas abiertas para secuelas y expansión del lore.'
+      ],
+      quote: 'La oscuridad total no es ausencia de luz: es ausencia de memoria.',
+      centerImage: '/assets/parallax/soluciones-parallax.jpg',
+      leftImage: '/assets/parallax/fundador-parallax.jpg',
+      rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
+    }
+  ],
+  en: [
+    {
+      title: 'Premise',
+      label: 'Premise',
+      paragraphs: [
+        'Total Darkness presents a dark sci-fi epic where the memory of the universe fragments and truth becomes a battlefield.',
+        'The narrative premise is clear: the more power humanity acquires, the closer it gets to repeating its original fall.',
+        'Rather than separating myth and technology, the saga fuses them as two languages of the same collective trauma: one remembers the origin, the other accelerates the destruction.'
+      ],
+      metaChips: ['setup', 'cosmological mystery', 'tragic tone'],
+      beatPoints: [
+        'Anomalies are detected in ancestral archives and orbital surveillance networks.',
+        'The investigation reveals a forbidden truth about the founding pact of Dilmun.',
+        'Humanity realizes that its technological ascent may be the trigger for its second fall.'
+      ],
+      quote: 'We don\'t fight to conquer the future; we fight to deserve memory in it.',
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/universback.jpg',
+      rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
+    },
+    {
+      title: 'World & Rules',
+      label: 'World',
+      paragraphs: [
+        'The universe combines Sumerian ruins, forbidden technology and territories warped by cosmological energy.',
+        'Its dramatic rules rest on three pillars: ancestral covenant, free will and the spiritual cost of every decision.',
+        'The living zones of the map react to moral choices: the environment is not decoration — it is a silent judge that records every action.'
+      ],
+      metaChips: ['worldbuilding', 'world laws', 'systemic risk'],
+      beatPoints: [
+        'Cosmological energy alters geography, climate and temporal perception in critical regions.',
+        'Ancient rituals function as control protocols, not as arbitrary magic.',
+        'Every power advantage carries ethical debt and erosion of identity.'
+      ],
+      quote: 'Every rule of this world was written in blood, and every exception demands another sacrifice.',
+      centerImage: '/assets/parallax/proyectos-parallax.jpg',
+      leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+      rightImage: '/assets/parallax/Oficina0013.jpg'
+    },
+    {
+      title: 'Characters & Factions',
+      label: 'Factions',
+      paragraphs: [
+        'Fallen heroes, ancient entities and technocratic orders compete to define what it means to "save" reality.',
+        'Each faction embodies a distinct moral vision, and their clash drives fragile alliances, betrayals and complex personal arcs.',
+        'The protagonists don\'t just battle external enemies: they dispute their own identity against implanted memories, broken lineages and impossible promises.'
+      ],
+      metaChips: ['character arcs', 'factions', 'ideological clash'],
+      beatPoints: [
+        'A tactical alliance forms to counter a greater threat, despite incompatible agendas.',
+        'The betrayal of a key actor redefines the political and emotional map.',
+        'The core group fractures when the price of victory demands an intimate loss.'
+      ],
+      quote: 'In Total Darkness, no one is pure: everyone is the sum of what they swore and what they betrayed.',
+      centerImage: '/assets/parallax/fundador-parallax.jpg',
+      leftImage: '/assets/parallax/proyectos-parallax.jpg',
+      rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
+    },
+    {
+      title: 'Conflict & Stakes',
+      label: 'Conflict',
+      paragraphs: [
+        'The fall of Dilmun and the great flood break the balance: the war is no longer about territory, but about control over human destiny.',
+        'The stakes escalate from the survival of cities to the possible extinction of the universe\'s collective memory.',
+        'The narrative avoids flat "good vs. evil": every side protects something legitimate and destroys something irreplaceable at the same time.'
+      ],
+      metaChips: ['stakes', 'war of destiny', 'moral ambiguity'],
+      beatPoints: [
+        'The local conflict becomes a civilizational crisis as the memory nodes fall.',
+        'The war expands to symbolic and technological planes, collapsing traditional borders.',
+        'Strategic decisions begin erasing history, not just lives.'
+      ],
+      quote: 'Losing a city hurts; losing the memory of why it existed — condemns.',
+      centerImage: '/assets/parallax/soluciones-parallax.jpg',
+      leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+      rightImage: '/assets/parallax/universe360.png'
+    },
+    {
+      title: 'Narrative Progression',
+      label: 'Progression',
+      paragraphs: [
+        'The story advances in a three-act rhythm: the beginning of the fracture, confrontation with multiple crises and the point of no return.',
+        'Each stage opens new questions, raises the emotional cost for the characters and sets the stage for the final confrontation.',
+        'The structure combines linear progression with layers of revelation: what seemed like context becomes a detonator, and what seemed like victory is revealed as debt.'
+      ],
+      metaChips: ['three-act structure', 'escalation', 'revelations'],
+      beatPoints: [
+        'Act I: detonation of the fracture and establishment of the narrative objective.',
+        'Act II: accumulation of crises, tactical losses and a paradigm shift.',
+        'Act III: convergence of narrative threads into one irreversible decision.'
+      ],
+      quote: 'There is no filler here: every chapter advances conflict, identity or price.',
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/universback.jpg',
+      rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
+    },
+    {
+      title: 'Climax & Legacy',
+      label: 'Climax',
+      paragraphs: [
+        'The climax pits humanity against cosmic corruption in an irreversible decision where winning also means losing something essential.',
+        'The ending leaves a fragile new order: the central conflict is resolved, but narrative seeds for future expansions are planted.',
+        'Legacy is not measured by who survives, but by what truth manages to be preserved when the entire system demands forgetting.'
+      ],
+      metaChips: ['climax', 'resolution', 'transmedia legacy'],
+      beatPoints: [
+        'Final confrontation between the doctrine of absolute control and the defense of free will.',
+        'A great sacrifice that redefines the identity of the survivors.',
+        'Unstable new status quo, with open paths for sequels and lore expansion.'
+      ],
+      quote: 'Total darkness is not the absence of light: it is the absence of memory.',
+      centerImage: '/assets/parallax/soluciones-parallax.jpg',
+      leftImage: '/assets/parallax/fundador-parallax.jpg',
+      rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
+    }
+  ]
+};
+
+const VISION_TABS = {
+  es: [
+    {
+      title: 'Hook del juego',
+      label: 'Hook',
+      paragraphs: [
+        'Total Darkness es una epopeya de ciencia ficción oscura donde la memoria del universo se convierte en un campo de guerra.',
+        'La fantasía del jugador es clara: explorar, decidir y sobrevivir a un conflicto donde cada avance tecnológico tiene costo moral.',
+        'Nuestro diferencial: mitología sumeria + distopía futurista + narrativa de alto riesgo con identidad estética propia.'
+      ],
+      metaChips: ['elevator pitch', 'fantasía del jugador', 'usp'],
+      beatPoints: [
+        'Premisa inmediata en menos de 10 segundos.',
+        'Propuesta de valor comprensible para jugador y publisher.',
+        'Identidad temática y visual consistente en toda la experiencia.'
+      ],
+      quote: 'No es solo lore: es una promesa jugable con una tesis narrativa clara.',
+      centerImage: '/assets/parallax/filosofia-parallax.jpg',
+      leftImage: '/assets/parallax/XHunterPoster.png',
+      rightImage: '/assets/parallax/universe360.png'
+    },
+    {
+      title: 'Gameplay y loop',
+      label: 'Gameplay',
+      paragraphs: [
+        'Core loop propuesto: explorar zonas de alto riesgo, recolectar información/recursos, tomar decisiones de impacto y ejecutar confrontaciones estratégicas.',
+        'Cada capítulo combina progresión narrativa con objetivos jugables medibles, evitando que la historia quede desconectada del control del jugador.',
+        'La presentación prioriza claridad de gameplay para facilitar evaluación comercial y comprensión de la propuesta.'
+      ],
+      metaChips: ['core loop', 'claridad jugable', 'retención'],
+      beatPoints: [
+        'Exploración con riesgo sistémico y descubrimiento de datos clave.',
+        'Decisiones con consecuencias en facciones, recursos y narrativa.',
+        'Confrontaciones y resolución de objetivos por capítulo.'
+      ],
+      quote: 'El jugador no solo observa el universo: lo modifica con cada decisión.',
+      centerImage: '/assets/parallax/soluciones-parallax.jpg',
+      leftImage: '/assets/parallax/proyectos-parallax.jpg',
+      rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
+    },
+    {
+      title: 'Features clave',
+      label: 'Features',
+      paragraphs: [
+        'Narrativa ramificada por actos y capítulos con enfoque cinematográfico.',
+        'Dirección de arte holográfica y estética dark sci-fi de alto contraste.',
+        'Navegación inmersiva del universo 3D con transición contextual por secciones.',
+        'Arquitectura escalable para integrar demo, press assets y bloques comerciales sin rehacer UX base.'
+      ],
+      metaChips: ['feature set', 'ux inmersiva', 'escalabilidad'],
+      beatPoints: [
+        'Sistema de capítulos navegables para progresión narrativa.',
+        'Diseño responsive para consumo en móvil y desktop.',
+        'Base preparada para integración de CTA comerciales.'
+      ],
+      quote: 'Cada feature existe para sostener la fantasía central, no para inflar la lista.',
+      centerImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+      leftImage: '/assets/parallax/Oficina0010.jpg',
+      rightImage: '/assets/parallax/Oficina0013.jpg'
+    },
+    {
+      title: 'Estado del proyecto',
+      label: 'Estado',
+      paragraphs: [
+        'Estado actual: vertical slice de presentación narrativa interactiva con navegación de secciones, cronología y diseño responsive.',
+        'Siguiente fase: consolidar demo jugable con objetivos cerrados de capítulo y métricas de validación.',
+        'Roadmap inmediato: gameplay loop demostrable, polish visual, material de publicación y validación con audiencia temprana.'
+      ],
+      metaChips: ['production status', 'roadmap', 'milestones'],
+      beatPoints: [
+        'Fase 1: presentación interactiva consolidada.',
+        'Fase 2: demo jugable y pruebas controladas.',
+        'Fase 3: distribución, wishlists y prensa especializada.'
+      ],
+      quote: 'La visión ya está encendida; ahora toca convertirla en tracción medible.',
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/Oficina0010.jpg',
+      rightImage: '/assets/parallax/Oficina0013.jpg'
+    },
+    {
+      title: 'Plataformas y modelo',
+      label: 'Mercado',
+      paragraphs: [
+        'Plataforma principal objetivo: PC (Steam) como primer mercado para comunidad, validación y escalado.',
+        'Estrategia comercial: lanzamiento por etapas (teaser → wishlist → demo → release) con comunicación narrativa consistente.',
+        'Modelo de negocio inicial: premium con potencial de expansión transmedia y contenido adicional por temporadas narrativas.'
+      ],
+      metaChips: ['pc-first', 'go-to-market', 'modelo premium'],
+      beatPoints: [
+        'Construcción de wishlist como KPI temprano.',
+        'Conversión de comunidad desde contenido narrativo y visual.',
+        'Escalado posterior a nuevas plataformas según tracción.'
+      ],
+      quote: 'No buscamos solo lanzar: buscamos entrar al mercado con posición clara.',
+      centerImage: '/assets/parallax/proyectos-parallax.jpg',
+      leftImage: '/assets/parallax/universback.jpg',
+      rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
+    },
+    {
+      title: 'Press kit y CTA',
+      label: 'Press / CTA',
+      paragraphs: [
+        'Entregables recomendados: factsheet, logos oficiales, screenshots en alta, trailer gameplay y contacto directo de prensa.',
+        'CTA principal para jugadores: Wishlist y seguimiento de novedades.',
+        'CTA para negocio/prensa: solicitud de demo, revisión de deck y contacto editorial.'
+      ],
+      metaChips: ['press kit', 'wishlist', 'business contact'],
+      beatPoints: [
+        'Preparar carpeta pública de assets verificables.',
+        'Publicar mensaje comercial unificado para web y tienda.',
+        'Habilitar ruta de contacto rápida para medios y publishers.'
+      ],
+      quote: 'Sin CTA y sin kit de prensa, el interés se pierde antes de convertirse en oportunidad.',
+      ctaButtons: [
+        { label: 'Wishlist en Steam', icon: 'star', href: 'https://store.steampowered.com', primary: true },
+        { label: 'Press Kit', icon: 'box', href: 'mailto:press@totaldarkness.dev?subject=Press%20Kit%20Request%20-%20Total%20Darkness', primary: false },
+        { label: 'Contacto editorial', icon: 'mail', href: 'mailto:contact@totaldarkness.dev?subject=Publisher%20Inquiry%20-%20Total%20Darkness', primary: false }
+      ],
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/fundador-parallax.jpg',
+      rightImage: '/assets/parallax/noticias-eventos-parallax.jpg'
+    }
+  ],
+  en: [
+    {
+      title: 'Game Hook',
+      label: 'Hook',
+      paragraphs: [
+        'Total Darkness is a dark sci-fi epic where the memory of the universe becomes a battlefield.',
+        'The player fantasy is clear: explore, decide and survive a conflict where every technological advance carries a moral cost.',
+        'Our differentiator: Sumerian mythology + futuristic dystopia + high-stakes narrative with its own aesthetic identity.'
+      ],
+      metaChips: ['elevator pitch', 'player fantasy', 'usp'],
+      beatPoints: [
+        'Immediate premise in under 10 seconds.',
+        'Value proposition clear to both player and publisher.',
+        'Consistent thematic and visual identity throughout the experience.'
+      ],
+      quote: 'This is not just lore: it\'s a playable promise with a clear narrative thesis.',
+      centerImage: '/assets/parallax/filosofia-parallax.jpg',
+      leftImage: '/assets/parallax/XHunterPoster.png',
+      rightImage: '/assets/parallax/universe360.png'
+    },
+    {
+      title: 'Gameplay & Loop',
+      label: 'Gameplay',
+      paragraphs: [
+        'Proposed core loop: explore high-risk zones, gather information/resources, make impactful decisions and execute strategic confrontations.',
+        'Each chapter combines narrative progression with measurable gameplay objectives, keeping the story connected to the player\'s agency.',
+        'The presentation prioritizes gameplay clarity to facilitate commercial evaluation and understanding of the proposal.'
+      ],
+      metaChips: ['core loop', 'gameplay clarity', 'retention'],
+      beatPoints: [
+        'Exploration with systemic risk and discovery of key data.',
+        'Decisions with consequences across factions, resources and narrative.',
+        'Confrontations and chapter-objective resolution.'
+      ],
+      quote: 'The player doesn\'t just observe the universe — they reshape it with every decision.',
+      centerImage: '/assets/parallax/soluciones-parallax.jpg',
+      leftImage: '/assets/parallax/proyectos-parallax.jpg',
+      rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
+    },
+    {
+      title: 'Key Features',
+      label: 'Features',
+      paragraphs: [
+        'Branching narrative by acts and chapters with a cinematic approach.',
+        'Holographic art direction and high-contrast dark sci-fi aesthetic.',
+        'Immersive 3D universe navigation with contextual section transitions.',
+        'Scalable architecture to integrate demo, press assets and commercial blocks without rebuilding the base UX.'
+      ],
+      metaChips: ['feature set', 'immersive ux', 'scalability'],
+      beatPoints: [
+        'Navigable chapter system for narrative progression.',
+        'Responsive design for mobile and desktop consumption.',
+        'Foundation ready for commercial CTA integration.'
+      ],
+      quote: 'Every feature exists to sustain the core fantasy, not to pad the list.',
+      centerImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
+      leftImage: '/assets/parallax/Oficina0010.jpg',
+      rightImage: '/assets/parallax/Oficina0013.jpg'
+    },
+    {
+      title: 'Project Status',
+      label: 'Status',
+      paragraphs: [
+        'Current state: vertical slice of interactive narrative presentation with section navigation, timeline and responsive design.',
+        'Next phase: consolidate a playable demo with closed chapter objectives and validation metrics.',
+        'Immediate roadmap: demonstrable gameplay loop, visual polish, publication materials and early-audience validation.'
+      ],
+      metaChips: ['production status', 'roadmap', 'milestones'],
+      beatPoints: [
+        'Phase 1: consolidated interactive presentation.',
+        'Phase 2: playable demo and controlled testing.',
+        'Phase 3: distribution, wishlists and specialist press.'
+      ],
+      quote: 'The vision is already lit; now it\'s time to turn it into measurable traction.',
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/Oficina0010.jpg',
+      rightImage: '/assets/parallax/Oficina0013.jpg'
+    },
+    {
+      title: 'Platforms & Model',
+      label: 'Market',
+      paragraphs: [
+        'Primary target platform: PC (Steam) as the first market for community building, validation and scaling.',
+        'Commercial strategy: phased launch (teaser → wishlist → demo → release) with consistent narrative communication.',
+        'Initial business model: premium, with transmedia expansion potential and additional content through narrative seasons.'
+      ],
+      metaChips: ['pc-first', 'go-to-market', 'premium model'],
+      beatPoints: [
+        'Wishlist growth as an early KPI.',
+        'Community conversion driven by narrative and visual content.',
+        'Subsequent scaling to new platforms based on traction.'
+      ],
+      quote: 'We\'re not just looking to launch — we\'re looking to enter the market with a clear position.',
+      centerImage: '/assets/parallax/proyectos-parallax.jpg',
+      leftImage: '/assets/parallax/universback.jpg',
+      rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
+    },
+    {
+      title: 'Press Kit & CTA',
+      label: 'Press / CTA',
+      paragraphs: [
+        'Recommended deliverables: factsheet, official logos, high-res screenshots, gameplay trailer and direct press contact.',
+        'Main CTA for players: Wishlist and news updates.',
+        'CTA for business/press: demo request, deck review and editorial contact.'
+      ],
+      metaChips: ['press kit', 'wishlist', 'business contact'],
+      beatPoints: [
+        'Prepare a public folder of verifiable assets.',
+        'Publish a unified commercial message for the web and store page.',
+        'Enable a fast-contact route for media and publishers.'
+      ],
+      quote: 'Without a CTA and a press kit, interest evaporates before it becomes an opportunity.',
+      ctaButtons: [
+        { label: 'Wishlist on Steam', icon: 'star', href: 'https://store.steampowered.com', primary: true },
+        { label: 'Press Kit', icon: 'box', href: 'mailto:press@totaldarkness.dev?subject=Press%20Kit%20Request%20-%20Total%20Darkness', primary: false },
+        { label: 'Editorial Contact', icon: 'mail', href: 'mailto:contact@totaldarkness.dev?subject=Publisher%20Inquiry%20-%20Total%20Darkness', primary: false }
+      ],
+      centerImage: '/assets/parallax/documentacion-parallax.jpg',
+      leftImage: '/assets/parallax/fundador-parallax.jpg',
+      rightImage: '/assets/parallax/noticias-eventos-parallax.jpg'
+    }
+  ]
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function App() {
   console.log('🌌 TOTAL DARKNESS APP LOADED 🌌');
   useAnalytics('Total Darkness', 'page');
@@ -1482,8 +1966,8 @@ export default function App() {
                 <div className="overflow-y-auto h-full flex items-stretch justify-start pt-[50px]">
                   {activeSection === 'historia' && (
                     <SectionStructurePage
-                      title="Historia"
-                      subtitle="Archivo narrativo"
+                      title={language === 'en' ? 'History' : 'Historia'}
+                      subtitle={language === 'en' ? 'Narrative archive' : 'Archivo narrativo'}
                       centerImage="/assets/parallax/documentacion-parallax.jpg"
                       leftImage="/assets/parallax/universback.jpg"
                       rightImage="/assets/parallax/universe360.png"
@@ -1494,122 +1978,7 @@ export default function App() {
                       centerPanelMaxHeight="calc(100vh - 180px)"
                       centerPanelPadding={18}
                       centerImageHeight={180}
-                      tabs={[
-                        {
-                          title: 'Premisa',
-                          label: 'Premisa',
-                          paragraphs: [
-                            'Total Darkness presenta una epopeya de ciencia ficción oscura donde la memoria del universo se fragmenta y la verdad se vuelve un campo de batalla.',
-                            'La propuesta narrativa parte de una premisa clara: cuanto más poder obtiene la humanidad, más cerca está de repetir la caída original.',
-                            'En lugar de separar mito y tecnología, la saga los fusiona como dos lenguajes del mismo trauma colectivo: uno recuerda el origen, el otro acelera la destrucción.'
-                          ],
-                          metaChips: ['setup', 'misterio cosmológico', 'tono trágico'],
-                          beatPoints: [
-                            'Se detectan anomalías en archivos ancestrales y redes de vigilancia orbital.',
-                            'La investigación revela una verdad prohibida sobre el pacto fundador de Dilmun.',
-                            'La humanidad entiende que su ascenso tecnológico podría ser el gatillo de su segunda caída.'
-                          ],
-                          quote: 'No luchamos por conquistar el futuro; luchamos por merecer memoria en él.',
-                          centerImage: '/assets/parallax/documentacion-parallax.jpg',
-                          leftImage: '/assets/parallax/universback.jpg',
-                          rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
-                        },
-                        {
-                          title: 'Mundo y reglas',
-                          label: 'Mundo',
-                          paragraphs: [
-                            'El universo combina ruinas sumerias, tecnología prohibida y territorios deformados por energía cosmológica.',
-                            'Sus reglas dramáticas se sostienen en tres ejes: pacto ancestral, libre albedrío y costo espiritual de cada decisión.',
-                            'Las zonas vivas del mapa reaccionan a decisiones morales: el entorno no es decorado, es un juez silencioso que registra cada elección.'
-                          ],
-                          metaChips: ['worldbuilding', 'leyes del mundo', 'riesgo sistémico'],
-                          beatPoints: [
-                            'La energía cosmológica altera geografía, clima y percepción temporal en regiones críticas.',
-                            'Los rituales antiguos funcionan como protocolos de control, no como magia arbitraria.',
-                            'Toda ventaja de poder conlleva deuda ética y erosión de identidad.'
-                          ],
-                          quote: 'Cada regla del mundo fue escrita con sangre, y cada excepción exige otro sacrificio.',
-                          centerImage: '/assets/parallax/proyectos-parallax.jpg',
-                          leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
-                          rightImage: '/assets/parallax/Oficina0013.jpg'
-                        },
-                        {
-                          title: 'Personajes y facciones',
-                          label: 'Facciones',
-                          paragraphs: [
-                            'Héroes caídos, entidades antiguas y órdenes tecnocráticas compiten por definir qué significa “salvar” la realidad.',
-                            'Cada facción encarna una visión moral distinta, y su choque impulsa alianzas frágiles, traiciones y arcos personales complejos.',
-                            'Los protagonistas no solo combaten enemigos externos: disputan su propia identidad frente a memorias implantadas, linajes rotos y promesas imposibles de cumplir.'
-                          ],
-                          metaChips: ['arcos de personaje', 'facciones', 'choque ideológico'],
-                          beatPoints: [
-                            'Una alianza táctica surge para frenar una amenaza mayor, pese a agendas incompatibles.',
-                            'La traición de un actor clave redefine el mapa político y emocional.',
-                            'El grupo central se fractura cuando el precio de la victoria exige una pérdida íntima.'
-                          ],
-                          quote: 'En Total Darkness, nadie es puro: todos son la suma de lo que juraron y lo que traicionaron.',
-                          centerImage: '/assets/parallax/fundador-parallax.jpg',
-                          leftImage: '/assets/parallax/proyectos-parallax.jpg',
-                          rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
-                        },
-                        {
-                          title: 'Conflicto y apuestas',
-                          label: 'Conflicto',
-                          paragraphs: [
-                            'La caída de Dilmun y el gran diluvio rompen el equilibrio: ahora la guerra no es por territorio, sino por el control del destino humano.',
-                            'Las apuestas escalan desde la supervivencia de ciudades hasta la posible extinción de la memoria colectiva del universo.',
-                            'La narrativa evita el “bien contra mal” plano: cada bando protege algo legítimo y destruye algo irremplazable al mismo tiempo.'
-                          ],
-                          metaChips: ['stakes', 'guerra de destino', 'ambigüedad moral'],
-                          beatPoints: [
-                            'El conflicto local se transforma en crisis civilizatoria cuando caen los nodos de memoria.',
-                            'La guerra se expande a planos simbólicos y tecnológicos, colapsando fronteras tradicionales.',
-                            'Las decisiones estratégicas comienzan a borrar historia, no solo vidas.'
-                          ],
-                          quote: 'Perder una ciudad duele; perder la memoria de por qué existía, condena.',
-                          centerImage: '/assets/parallax/soluciones-parallax.jpg',
-                          leftImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
-                          rightImage: '/assets/parallax/universe360.png'
-                        },
-                        {
-                          title: 'Progresión narrativa',
-                          label: 'Progresión',
-                          paragraphs: [
-                            'La historia avanza en ritmo de tres actos: inicio del quiebre, confrontación con múltiples crisis y punto de no retorno.',
-                            'Cada etapa abre nuevas preguntas, eleva el costo emocional de los personajes y prepara el terreno para la confrontación final.',
-                            'La estructura combina progresión lineal con capas de revelación: lo que parecía contexto se vuelve detonador, y lo que parecía victoria se revela como deuda.'
-                          ],
-                          metaChips: ['estructura en actos', 'escalada', 'revelaciones'],
-                          beatPoints: [
-                            'Acto I: detonación del quiebre y establecimiento del objetivo narrativo.',
-                            'Acto II: acumulación de crisis, pérdidas tácticas y cambio de paradigma.',
-                            'Acto III: convergencia de líneas narrativas en una decisión irreversible.'
-                          ],
-                          quote: 'Aquí no hay relleno: cada capítulo adelanta conflicto, identidad o precio.',
-                          centerImage: '/assets/parallax/documentacion-parallax.jpg',
-                          leftImage: '/assets/parallax/universback.jpg',
-                          rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
-                        },
-                        {
-                          title: 'Clímax y legado',
-                          label: 'Clímax',
-                          paragraphs: [
-                            'El clímax enfrenta humanidad y corrupción cósmica en una decisión irreversible donde ganar también implica perder algo esencial.',
-                            'El cierre deja un nuevo orden frágil: hay resolución del conflicto central, pero también semillas narrativas para futuras expansiones.',
-                            'El legado no se mide por quién sobrevive, sino por qué verdad logra conservarse cuando todo el sistema exige olvidar.'
-                          ],
-                          metaChips: ['clímax', 'resolución', 'legado transmedia'],
-                          beatPoints: [
-                            'Confrontación final entre doctrina de control absoluto y defensa del libre albedrío.',
-                            'Sacrificio mayor que redefine la identidad de los sobrevivientes.',
-                            'Nuevo statu quo inestable, con rutas abiertas para secuelas y expansión del lore.'
-                          ],
-                          quote: 'La oscuridad total no es ausencia de luz: es ausencia de memoria.',
-                          centerImage: '/assets/parallax/soluciones-parallax.jpg',
-                          leftImage: '/assets/parallax/fundador-parallax.jpg',
-                          rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
-                        }
-                      ]}
+                      tabs={HISTORIA_TABS[language || 'es']}
                     />
                   )}
 
@@ -1619,8 +1988,8 @@ export default function App() {
 
                   {activeSection === 'vision' && (
                     <SectionStructurePage
-                      title="Presentación"
-                      subtitle="Estructura final"
+                      title={language === 'en' ? 'Presentation' : 'Presentación'}
+                      subtitle={language === 'en' ? 'Final structure' : 'Estructura final'}
                       centerImage="/assets/parallax/filosofia-parallax.jpg"
                       leftImage="/assets/parallax/XHunterPoster.png"
                       rightImage="/assets/parallax/XHunterPoster0040.png"
@@ -1628,149 +1997,13 @@ export default function App() {
                       centerPanelVariant="narrative-dense"
                       tabsPlacement="left-panel"
                       tabsButtonPadding="8px 14px"
-                      tabs={[
-                        {
-                          title: 'Hook del juego',
-                          label: 'Hook',
-                          paragraphs: [
-                            'Total Darkness es una epopeya de ciencia ficción oscura donde la memoria del universo se convierte en un campo de guerra.',
-                            'La fantasía del jugador es clara: explorar, decidir y sobrevivir a un conflicto donde cada avance tecnológico tiene costo moral.',
-                            'Nuestro diferencial: mitología sumeria + distopía futurista + narrativa de alto riesgo con identidad estética propia.'
-                          ],
-                          metaChips: ['elevator pitch', 'fantasía del jugador', 'usp'],
-                          beatPoints: [
-                            'Premisa inmediata en menos de 10 segundos.',
-                            'Propuesta de valor comprensible para jugador y publisher.',
-                            'Identidad temática y visual consistente en toda la experiencia.'
-                          ],
-                          quote: 'No es solo lore: es una promesa jugable con una tesis narrativa clara.',
-                          centerImage: '/assets/parallax/filosofia-parallax.jpg',
-                          leftImage: '/assets/parallax/XHunterPoster.png',
-                          rightImage: '/assets/parallax/universe360.png'
-                        },
-                        {
-                          title: 'Gameplay y loop',
-                          label: 'Gameplay',
-                          paragraphs: [
-                            'Core loop propuesto: explorar zonas de alto riesgo, recolectar información/recursos, tomar decisiones de impacto y ejecutar confrontaciones estratégicas.',
-                            'Cada capítulo combina progresión narrativa con objetivos jugables medibles, evitando que la historia quede desconectada del control del jugador.',
-                            'La presentación prioriza claridad de gameplay para facilitar evaluación comercial y comprensión de la propuesta.'
-                          ],
-                          metaChips: ['core loop', 'claridad jugable', 'retención'],
-                          beatPoints: [
-                            'Exploración con riesgo sistémico y descubrimiento de datos clave.',
-                            'Decisiones con consecuencias en facciones, recursos y narrativa.',
-                            'Confrontaciones y resolución de objetivos por capítulo.'
-                          ],
-                          quote: 'El jugador no solo observa el universo: lo modifica con cada decisión.',
-                          centerImage: '/assets/parallax/soluciones-parallax.jpg',
-                          leftImage: '/assets/parallax/proyectos-parallax.jpg',
-                          rightImage: '/assets/parallax/servicios-productos-parallax.jpg'
-                        },
-                        {
-                          title: 'Features clave',
-                          label: 'Features',
-                          paragraphs: [
-                            'Narrativa ramificada por actos y capítulos con enfoque cinematográfico.',
-                            'Dirección de arte holográfica y estética dark sci-fi de alto contraste.',
-                            'Navegación inmersiva del universo 3D con transición contextual por secciones.',
-                            'Arquitectura escalable para integrar demo, press assets y bloques comerciales sin rehacer UX base.'
-                          ],
-                          metaChips: ['feature set', 'ux inmersiva', 'escalabilidad'],
-                          beatPoints: [
-                            'Sistema de capítulos navegables para progresión narrativa.',
-                            'Diseño responsive para consumo en móvil y desktop.',
-                            'Base preparada para integración de CTA comerciales.'
-                          ],
-                          quote: 'Cada feature existe para sostener la fantasía central, no para inflar la lista.',
-                          centerImage: '/assets/parallax/documentacion-recursos-parallax.jpg',
-                          leftImage: '/assets/parallax/Oficina0010.jpg',
-                          rightImage: '/assets/parallax/Oficina0013.jpg'
-                        },
-                        {
-                          title: 'Estado del proyecto',
-                          label: 'Estado',
-                          paragraphs: [
-                            'Estado actual: vertical slice de presentación narrativa interactiva con navegación de secciones, cronología y diseño responsive.',
-                            'Siguiente fase: consolidar demo jugable con objetivos cerrados de capítulo y métricas de validación.',
-                            'Roadmap inmediato: gameplay loop demostrable, polish visual, material de publicación y validación con audiencia temprana.'
-                          ],
-                          metaChips: ['production status', 'roadmap', 'milestones'],
-                          beatPoints: [
-                            'Fase 1: presentación interactiva consolidada.',
-                            'Fase 2: demo jugable y pruebas controladas.',
-                            'Fase 3: distribución, wishlists y prensa especializada.'
-                          ],
-                          quote: 'La visión ya está encendida; ahora toca convertirla en tracción medible.',
-                          centerImage: '/assets/parallax/documentacion-parallax.jpg',
-                          leftImage: '/assets/parallax/Oficina0010.jpg',
-                          rightImage: '/assets/parallax/Oficina0013.jpg'
-                        },
-                        {
-                          title: 'Plataformas y modelo',
-                          label: 'Mercado',
-                          paragraphs: [
-                            'Plataforma principal objetivo: PC (Steam) como primer mercado para comunidad, validación y escalado.',
-                            'Estrategia comercial: lanzamiento por etapas (teaser → wishlist → demo → release) con comunicación narrativa consistente.',
-                            'Modelo de negocio inicial: premium con potencial de expansión transmedia y contenido adicional por temporadas narrativas.'
-                          ],
-                          metaChips: ['pc-first', 'go-to-market', 'modelo premium'],
-                          beatPoints: [
-                            'Construcción de wishlist como KPI temprano.',
-                            'Conversión de comunidad desde contenido narrativo y visual.',
-                            'Escalado posterior a nuevas plataformas según tracción.'
-                          ],
-                          quote: 'No buscamos solo lanzar: buscamos entrar al mercado con posición clara.',
-                          centerImage: '/assets/parallax/proyectos-parallax.jpg',
-                          leftImage: '/assets/parallax/universback.jpg',
-                          rightImage: '/assets/parallax/cronograma-progreso-parallax.jpg'
-                        },
-                        {
-                          title: 'Press kit y CTA',
-                          label: 'Press / CTA',
-                          paragraphs: [
-                            'Entregables recomendados: factsheet, logos oficiales, screenshots en alta, trailer gameplay y contacto directo de prensa.',
-                            'CTA principal para jugadores: Wishlist y seguimiento de novedades.',
-                            'CTA para negocio/prensa: solicitud de demo, revisión de deck y contacto editorial.'
-                          ],
-                          metaChips: ['press kit', 'wishlist', 'business contact'],
-                          beatPoints: [
-                            'Preparar carpeta pública de assets verificables.',
-                            'Publicar mensaje comercial unificado para web y tienda.',
-                            'Habilitar ruta de contacto rápida para medios y publishers.'
-                          ],
-                          quote: 'Sin CTA y sin kit de prensa, el interés se pierde antes de convertirse en oportunidad.',
-                          ctaButtons: [
-                            {
-                              label: 'Wishlist en Steam',
-                              icon: 'star',
-                              href: 'https://store.steampowered.com',
-                              primary: true
-                            },
-                            {
-                              label: 'Press Kit',
-                              icon: 'box',
-                              href: 'mailto:press@totaldarkness.dev?subject=Press%20Kit%20Request%20-%20Total%20Darkness',
-                              primary: false
-                            },
-                            {
-                              label: 'Contacto editorial',
-                              icon: 'mail',
-                              href: 'mailto:contact@totaldarkness.dev?subject=Publisher%20Inquiry%20-%20Total%20Darkness',
-                              primary: false
-                            }
-                          ],
-                          centerImage: '/assets/parallax/documentacion-parallax.jpg',
-                          leftImage: '/assets/parallax/fundador-parallax.jpg',
-                          rightImage: '/assets/parallax/noticias-eventos-parallax.jpg'
-                        }
-                      ]}
+                      tabs={VISION_TABS[language || 'es']}
                     />
                   )}
                 </div>
 
-                {/* Right Column - Empty */}
-                <div></div>
+                {/* Right Column */}
+                <div className="hidden lg:flex pl-2" />
               </div>
             </div>
           </div>
