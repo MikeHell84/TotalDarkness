@@ -1335,7 +1335,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/company/xlerion" target="_blank" rel="noopener noreferrer">Xlerion en LinkedIn</a></li>
                         <li><strong>Patreon:</strong> <a href="https://www.patreon.com/c/xlerion" target="_blank" rel="noopener noreferrer">Apóyanos en Patreon</a></li>
                     </ul>
-                    <p>Para asuntos más formales, puedes contactarnos a través de nuestro correo electrónico: <a href="mailto:contactus@xlerion.com">contactus@xlerion.com</a>.</p>
+                    <p>Para asuntos más formales, puedes contactarnos a través de nuestro correo electrónico: <a href="mailto:totaldarkness@xlerion.com">totaldarkness@xlerion.com</a>.</p>
                 `
             },
             en: {
@@ -1347,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/company/xlerion" target="_blank" rel="noopener noreferrer">Xlerion on LinkedIn</a></li>
                         <li><strong>Patreon:</strong> <a href="https://www.patreon.com/c/xlerion" target="_blank" rel="noopener noreferrer">Support us on Patreon</a></li>
                     </ul>
-                    <p>For more formal matters, you can contact us via email: <a href="mailto:contactus@xlerion.com">contactus@xlerion.com</a>.</p>
+                    <p>For more formal matters, you can contact us via email: <a href="mailto:totaldarkness@xlerion.com">totaldarkness@xlerion.com</a>.</p>
                 `
             }
         },

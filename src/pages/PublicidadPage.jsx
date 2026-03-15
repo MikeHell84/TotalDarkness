@@ -89,7 +89,7 @@ export default function PublicidadPage() {
     }, [shareUrl, t]);
 
     const contactEmails = useMemo(() => ([
-        'contactus@xlerion.com',
+        'totaldarkness@xlerion.com',
         'sales@xlerion.com'
     ]), []);
 

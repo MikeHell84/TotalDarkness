@@ -2115,7 +2115,7 @@ const translations = {
         publicidad_contact_title: 'Contacto directo',
         publicidad_contact_desc: 'Convertimos retos en soluciones medibles con plazos claros y estándares altos.',
         publicidad_contact_email_label: 'Correo:',
-        publicidad_contact_email_value: 'contactus@xlerion.com / sales@xlerion.com',
+        publicidad_contact_email_value: 'totaldarkness@xlerion.com / sales@xlerion.com',
         publicidad_contact_social_label: 'Redes:',
         publicidad_contact_social_value: 'LinkedIn / Instagram @xlerion'
     },
@@ -2260,7 +2260,7 @@ const translations = {
         publicidad_contact_title: 'Direct contact',
         publicidad_contact_desc: 'We turn challenges into measurable solutions with clear timelines and high standards.',
         publicidad_contact_email_label: 'Email:',
-        publicidad_contact_email_value: 'contactus@xlerion.com / sales@xlerion.com',
+        publicidad_contact_email_value: 'totaldarkness@xlerion.com / sales@xlerion.com',
         publicidad_contact_social_label: 'Social:',
         publicidad_contact_social_value: 'LinkedIn / Instagram @xlerion',
         lang_es: 'ES',

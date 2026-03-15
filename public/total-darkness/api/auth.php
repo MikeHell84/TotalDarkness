@@ -15,7 +15,7 @@ error_reporting(E_ALL);
 // Credenciales SMTP - Cargar desde variables de entorno
 $smtp_host = getenv('SMTP_HOST') ?: 'mail.xlerion.com';
 $smtp_port = getenv('SMTP_PORT') ?: 465;
-$smtp_username = getenv('SMTP_USERNAME') ?: 'support@xlerion.com';
+$smtp_username = getenv('SMTP_USERNAME') ?: 'totaldarkness@xlerion.com';
 $smtp_password = getenv('SMTP_PASSWORD');
 
 if (!$smtp_password) {
@@ -32,7 +32,8 @@ define('SMTP_FROM_EMAIL', $smtp_username);
 define('SMTP_FROM_NAME', 'Total Darkness - Soporte');
 
 // Detectar URL base según el entorno
-function getBaseUrl() {
+function getBaseUrl()
+{
     if ($_SERVER['HTTP_HOST'] === 'localhost:8080') {
         return 'http://localhost:5173'; // Desarrollo local
     }
@@ -52,7 +53,7 @@ if (!file_exists($dbDir)) {
 try {
     $db = new PDO('sqlite:' . $dbFile);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
     // Crear tabla de administradores si no existe
     $db->exec("
         CREATE TABLE IF NOT EXISTS admins (
@@ -66,7 +67,7 @@ try {
             active INTEGER DEFAULT 1
         )
     ");
-    
+
     // Crear tabla de tokens de recuperación
     $db->exec("
         CREATE TABLE IF NOT EXISTS recovery_tokens (
@@ -78,7 +79,7 @@ try {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ");
-    
+
     // Verificar si existe el admin por defecto
     $stmt = $db->query("SELECT COUNT(*) FROM admins");
     if ($stmt->fetchColumn() == 0) {
@@ -89,7 +90,6 @@ try {
             VALUES ('admin@xlerion.com', '$defaultHash', 'Administrador Principal', 'SYSTEM')
         ");
     }
-    
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
@@ -97,10 +97,11 @@ try {
 }
 
 // Función para enviar correo de recuperación usando SMTP SSL/TLS de Xlerion
-function sendRecoveryEmail($email, $token) {
+function sendRecoveryEmail($email, $token)
+{
     $baseUrl = getBaseUrl();
     $resetLink = $baseUrl . "/total-darkness/reset-password.html?token=" . urlencode($token);
-    
+
     $subject = "Recuperación de Contraseña - Total Darkness";
     $htmlMessage = "
         <html>
@@ -139,61 +140,62 @@ function sendRecoveryEmail($email, $token) {
         </body>
         </html>
     ";
-    
+
     return sendViaSmtp($email, $subject, $htmlMessage);
 }
 
 // Función para enviar correo vía SMTP SSL/TLS de Xlerion
-function sendViaSmtp($to, $subject, $htmlMessage) {
+function sendViaSmtp($to, $subject, $htmlMessage)
+{
     $host = SMTP_HOST;
     $port = SMTP_PORT;
     $username = SMTP_USERNAME;
     $password = SMTP_PASSWORD;
     $fromEmail = SMTP_FROM_EMAIL;
     $fromName = SMTP_FROM_NAME;
-    
+
     try {
         // Conectar con SSL/TLS al servidor SMTP
         $connection = fsockopen("ssl://" . $host, $port, $errno, $errstr, 30);
-        
+
         if (!$connection) {
             throw new Exception("Conexión SMTP fallida: $errstr ($errno)");
         }
-        
+
         // Función auxiliar para enviar comandos SMTP
-        $sendCommand = function($cmd) use ($connection) {
+        $sendCommand = function ($cmd) use ($connection) {
             fwrite($connection, $cmd . "\r\n");
             $response = fgets($connection, 1024);
             return $response;
         };
-        
+
         // Recibir saludo del servidor
         $response = fgets($connection, 1024);
         if (substr($response, 0, 3) !== '220') {
             throw new Exception("Respuesta SMTP inválida: " . trim($response));
         }
-        
+
         // EHLO
         $sendCommand("EHLO " . gethostname());
-        
+
         // AUTH LOGIN
         $sendCommand("AUTH LOGIN");
-        
+
         // Enviar usuario (base64)
         $sendCommand(base64_encode($username));
-        
+
         // Enviar contraseña (base64)
         $sendCommand(base64_encode($password));
-        
+
         // FROM
         $sendCommand("MAIL FROM:<$fromEmail>");
-        
+
         // RCPT TO
         $sendCommand("RCPT TO:<$to>");
-        
+
         // DATA
         $sendCommand("DATA");
-        
+
         // Construir el mensaje MIME completo
         $message = "From: $fromName <$fromEmail>\r\n";
         $message .= "To: $to\r\n";
@@ -204,21 +206,20 @@ function sendViaSmtp($to, $subject, $htmlMessage) {
         $message .= "\r\n";
         $message .= $htmlMessage;
         $message .= "\r\n";
-        
+
         // Enviar mensaje
         fwrite($connection, $message . "\r\n.\r\n");
         $response = fgets($connection, 1024);
-        
+
         if (substr($response, 0, 3) !== '250') {
             throw new Exception("Error al enviar mensaje: " . trim($response));
         }
-        
+
         // QUIT
         $sendCommand("QUIT");
-        
+
         fclose($connection);
         return true;
-        
     } catch (Exception $e) {
         // Registrar error en log
         error_log("SMTP Error: " . $e->getMessage());
@@ -244,30 +245,30 @@ if (empty($action)) {
 
 try {
     switch ($action) {
-        
+
         // ===== LOGIN =====
         case 'login':
             $email = $input['email'] ?? '';
             $password = $input['password'] ?? '';
-            
+
             if (empty($email) || empty($password)) {
                 throw new Exception('Email y contraseña son requeridos');
             }
-            
+
             $passwordHash = hash('sha256', $password);
-            
+
             $stmt = $db->prepare("SELECT * FROM admins WHERE email = ? AND password_hash = ? AND active = 1");
             $stmt->execute([$email, $passwordHash]);
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if ($admin) {
                 // Actualizar último login
                 $db->prepare("UPDATE admins SET last_login = CURRENT_TIMESTAMP WHERE id = ?")
-                   ->execute([$admin['id']]);
-                
+                    ->execute([$admin['id']]);
+
                 // Generar token de sesión
                 $sessionToken = bin2hex(random_bytes(32));
-                
+
                 echo json_encode([
                     'success' => true,
                     'user' => [
@@ -283,28 +284,28 @@ try {
                 throw new Exception('Credenciales inválidas');
             }
             break;
-        
+
         // ===== SOLICITAR RECUPERACIÓN =====
         case 'request-recovery':
             $email = $input['email'] ?? '';
-            
+
             if (empty($email)) {
                 throw new Exception('Email es requerido');
             }
-            
+
             // Verificar que el email existe
             $stmt = $db->prepare("SELECT id FROM admins WHERE email = ? AND active = 1");
             $stmt->execute([$email]);
-            
+
             if ($stmt->fetch()) {
                 // Generar token único
                 $token = bin2hex(random_bytes(32));
                 $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
-                
+
                 // Guardar token
                 $stmt = $db->prepare("INSERT INTO recovery_tokens (email, token, expires_at) VALUES (?, ?, ?)");
                 $stmt->execute([$email, $token, $expiresAt]);
-                
+
                 // Enviar correo
                 if (sendRecoveryEmail($email, $token)) {
                     echo json_encode([
@@ -312,7 +313,7 @@ try {
                         'message' => 'Se ha enviado un correo con instrucciones para recuperar tu contraseña'
                     ]);
                 } else {
-                    throw new Exception('Error al enviar el correo. Por favor, contacta a contactus@xlerion.com');
+                    throw new Exception('Error al enviar el correo. Por favor, contacta a totaldarkness@xlerion.com');
                 }
             } else {
                 // Por seguridad, no revelamos si el email existe o no
@@ -322,22 +323,22 @@ try {
                 ]);
             }
             break;
-        
+
         // ===== VALIDAR TOKEN =====
         case 'validate-token':
             $token = $input['token'] ?? '';
-            
+
             if (empty($token)) {
                 throw new Exception('Token es requerido');
             }
-            
+
             $stmt = $db->prepare("
                 SELECT * FROM recovery_tokens 
                 WHERE token = ? AND used = 0 AND datetime(expires_at) > datetime('now')
             ");
             $stmt->execute([$token]);
             $recovery = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if ($recovery) {
                 echo json_encode([
                     'success' => true,
@@ -347,20 +348,20 @@ try {
                 throw new Exception('Token inválido o expirado');
             }
             break;
-        
+
         // ===== RESETEAR CONTRASEÑA =====
         case 'reset-password':
             $token = $input['token'] ?? '';
             $newPassword = $input['newPassword'] ?? '';
-            
+
             if (empty($token) || empty($newPassword)) {
                 throw new Exception('Token y nueva contraseña son requeridos');
             }
-            
+
             if (strlen($newPassword) < 8) {
                 throw new Exception('La contraseña debe tener al menos 8 caracteres');
             }
-            
+
             // Validar token
             $stmt = $db->prepare("
                 SELECT * FROM recovery_tokens 
@@ -368,42 +369,42 @@ try {
             ");
             $stmt->execute([$token]);
             $recovery = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$recovery) {
                 throw new Exception('Token inválido o expirado');
             }
-            
+
             // Actualizar contraseña
             $newPasswordHash = hash('sha256', $newPassword);
             $stmt = $db->prepare("UPDATE admins SET password_hash = ? WHERE email = ?");
             $stmt->execute([$newPasswordHash, $recovery['email']]);
-            
+
             // Marcar token como usado
             $db->prepare("UPDATE recovery_tokens SET used = 1 WHERE token = ?")
-               ->execute([$token]);
-            
+                ->execute([$token]);
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Contraseña actualizada correctamente'
             ]);
             break;
-        
+
         // ===== LISTAR ADMINISTRADORES =====
         case 'list-admins':
             $currentEmail = $input['currentEmail'] ?? '';
             $sessionToken = $input['sessionToken'] ?? '';
-            
+
             if (empty($currentEmail)) {
                 throw new Exception('No autorizado');
             }
-            
+
             // Verificar que el usuario actual existe y está activo
             $stmt = $db->prepare("SELECT id FROM admins WHERE email = ? AND active = 1");
             $stmt->execute([$currentEmail]);
             if (!$stmt->fetch()) {
                 throw new Exception('No autorizado');
             }
-            
+
             // Obtener lista de administradores
             $stmt = $db->query("
                 SELECT id, email, name, created_at, created_by, last_login, active 
@@ -411,13 +412,13 @@ try {
                 ORDER BY created_at DESC
             ");
             $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             echo json_encode([
                 'success' => true,
                 'admins' => $admins
             ]);
             break;
-        
+
         // ===== CREAR ADMINISTRADOR =====
         case 'create-admin':
             $currentEmail = $input['currentEmail'] ?? '';
@@ -425,35 +426,35 @@ try {
             $newEmail = $input['newEmail'] ?? '';
             $newPassword = $input['newPassword'] ?? '';
             $newName = $input['newName'] ?? '';
-            
+
             if (empty($currentEmail) || empty($currentPassword)) {
                 throw new Exception('Debes autenticarte para crear un nuevo administrador');
             }
-            
+
             if (empty($newEmail) || empty($newPassword)) {
                 throw new Exception('Email y contraseña del nuevo administrador son requeridos');
             }
-            
+
             if (strlen($newPassword) < 8) {
                 throw new Exception('La contraseña debe tener al menos 8 caracteres');
             }
-            
+
             // Verificar credenciales del admin actual
             $currentPasswordHash = hash('sha256', $currentPassword);
             $stmt = $db->prepare("SELECT id FROM admins WHERE email = ? AND password_hash = ? AND active = 1");
             $stmt->execute([$currentEmail, $currentPasswordHash]);
-            
+
             if (!$stmt->fetch()) {
                 throw new Exception('Credenciales inválidas');
             }
-            
+
             // Verificar que el nuevo email no existe
             $stmt = $db->prepare("SELECT id FROM admins WHERE email = ?");
             $stmt->execute([$newEmail]);
             if ($stmt->fetch()) {
                 throw new Exception('Este email ya está registrado');
             }
-            
+
             // Crear nuevo administrador
             $newPasswordHash = hash('sha256', $newPassword);
             $stmt = $db->prepare("
@@ -461,7 +462,7 @@ try {
                 VALUES (?, ?, ?, ?)
             ");
             $stmt->execute([$newEmail, $newPasswordHash, $newName, $currentEmail]);
-            
+
             echo json_encode([
                 'success' => true,
                 'message' => 'Administrador creado correctamente',
@@ -472,38 +473,38 @@ try {
                 ]
             ]);
             break;
-        
+
         // ===== DESACTIVAR ADMINISTRADOR =====
         case 'deactivate-admin':
             $currentEmail = $input['currentEmail'] ?? '';
             $currentPassword = $input['currentPassword'] ?? '';
             $targetEmail = $input['targetEmail'] ?? '';
-            
+
             if (empty($currentEmail) || empty($currentPassword)) {
                 throw new Exception('Debes autenticarte para desactivar un administrador');
             }
-            
+
             if (empty($targetEmail)) {
                 throw new Exception('Email del administrador a desactivar es requerido');
             }
-            
+
             if ($currentEmail === $targetEmail) {
                 throw new Exception('No puedes desactivar tu propia cuenta');
             }
-            
+
             // Verificar credenciales del admin actual
             $currentPasswordHash = hash('sha256', $currentPassword);
             $stmt = $db->prepare("SELECT id FROM admins WHERE email = ? AND password_hash = ? AND active = 1");
             $stmt->execute([$currentEmail, $currentPasswordHash]);
-            
+
             if (!$stmt->fetch()) {
                 throw new Exception('Credenciales inválidas');
             }
-            
+
             // Desactivar administrador
             $stmt = $db->prepare("UPDATE admins SET active = 0 WHERE email = ?");
             $stmt->execute([$targetEmail]);
-            
+
             if ($stmt->rowCount() > 0) {
                 echo json_encode([
                     'success' => true,
@@ -513,11 +514,10 @@ try {
                 throw new Exception('Administrador no encontrado');
             }
             break;
-        
+
         default:
             throw new Exception('Acción no válida');
     }
-    
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode([

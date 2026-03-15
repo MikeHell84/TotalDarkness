@@ -66,7 +66,7 @@ app.post('/api/send-email', async (req, res) => {
     try {
         const mailOptions = {
             from: `"Formulario XLERION" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_TO || 'contactus@xlerion.com',
+            to: process.env.EMAIL_TO || 'sales@xlerion.com',
             replyTo: `"${name}" <${email}>`,
             subject: `Nuevo mensaje de contacto de ${name}`,
             html: `
@@ -113,7 +113,7 @@ app.post('/api/send-email', async (req, res) => {
 app.listen(PORT, () => {
     console.log('\n🚀 Servidor de emails XLERION iniciado');
     console.log(`📧 Escuchando en http://localhost:${PORT}`);
-    console.log(`📬 Emails se enviarán a: ${process.env.EMAIL_TO || 'contactus@xlerion.com'}`);
+    console.log(`📬 Emails se enviarán a: ${process.env.EMAIL_TO || 'sales@xlerion.com'}`);
     console.log('\n💡 Para probar el formulario:');
     console.log('   1. Ejecuta el frontend: npm run dev');
     console.log('   2. Abre: http://localhost:5173');

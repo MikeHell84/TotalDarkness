@@ -28,15 +28,13 @@ export default function Footer({ navTo }) {
                         </a>
                         <div className="flex flex-col gap-2 text-[10px] text-gray-500 font-mono uppercase tracking-widest">
                             {[
-                                'contactus@xlerion.com',
-                                'support@xlerion.com',
+                                'totaldarkness@xlerion.com',
                                 'sales@xlerion.com',
                                 'admin@xlerion.com',
                                 'branding@xlerion.com',
                                 'toolkit@xlerion.com',
                                 'neuro@xlerion.com',
-                                'mike@xlerion.com',
-                                'totaldarkness@xlerion.com'
+                                'mike@xlerion.com'
                             ].map((mail) => (
                                 <a
                                     key={mail}
