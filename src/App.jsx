@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useAnalytics } from './hooks/useAnalytics';
+import { useLanguage } from './context/LanguageContext';
 import { UniverseScene } from './components/UniverseScene';
 import { StarParticles } from './components/StarParticles';
 import MundoPage from './pages/MundoPage';
@@ -531,6 +532,13 @@ export default function App() {
   const PANEL_TV_OFF_MS = 300;
   const PANEL_TV_ON_MS = 300;
   const [language, setLanguage] = useState(null);
+  const { setLang } = useLanguage();
+
+  // Keep LanguageContext in sync so child pages (e.g. TimelineSectionPage) see the right lang
+  useEffect(() => {
+    if (language) setLang(language);
+  }, [language, setLang]);
+
   const cameraRef = useRef(null);
   const planetsRef = useRef([]);
   const isDraggingRef = useRef(false);
