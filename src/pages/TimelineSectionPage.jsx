@@ -20,9 +20,9 @@ const timelineTabs = [
             'Estoy paralizado ante la muerte. Ella me observa, con una mirada fría, inmutable, pero en sus ojos veo un pasado que nunca viví. Y sin embargo, siempre estuve ahí. Desde el principio.',
             'Fue en ese instante cuando comprendí la clave para elegir nuestro propio destino. O aceptar una sentencia de muerte. Fin de la bitácora M840927'
         ],
-        centerImage: '/assets/timeline-center.jpg',
-        leftImage: '/assets/timeline-left.jpg',
-        rightImage: '/assets/timeline-right.jpg'
+        centerImage: '/images/documentacion-parallax.jpg',
+        leftImage: '/images/filosofia-parallax.jpg',
+        rightImage: '/images/proyectos-parallax.jpg'
     },
     {
         title: 'Capítulo I',
@@ -36,9 +36,9 @@ const timelineTabs = [
             'Su nombre fue Adapa, el primer hombre. Junto a él apareció Ninhursag, la Madre de la fertilidad y la creación. Los dioses contemplaron su obra y encontraron un nuevo equilibrio. La Tierra, única entre los mundos, se convirtió en el pilar del universo. Adapa y Ninhursag mantenían la armonía entre todas las especies, asegurando el orden que los dioses habían concebido. Pero los dioses no querían repetir los errores del pasado. La plaga había surgido antes, y la destrucción que causó en los mundos aún estaba fresca en sus memorias. Necesitaban garantizar que esta nueva civilización no sería manipulada, que su destino no estuviera atado a las sombras del caos.',
             'Entonces, pusieron a prueba su creación. Crearon el libre albedrío, pero no como un regalo inmediato, sino como un experimento. Querían ver cómo Adapa y Ninhursag reaccionaban, cómo tomaban sus propias decisiones sin la intervención divina. Los observaron en acción. Vieron cómo funcionaba eficientemente, cómo la elección personal guiaba el destino de los seres sin necesidad de control externo. El experimento fue un éxito. La conciencia había surgido, la plaga no había reaparecido, y el universo parecía en paz. Entonces, decretaron una única ley universal, aquella que impediría que el mal se propagara nuevamente: El libre albedrío. Ningún ser sería forzado a actuar o pensar de una manera específica. No habría imposiciones, ni caminos únicos. Cada ser vería el sendero frente a sí y decidiría su propio destino. Con esta ley establecida, los dioses abandonaron el plano universal. En ese instante, todos los seres del cosmos fueron libres, dueños de su propia elección, pero también del destino del universo.'
         ],
-        centerImage: '/assets/timeline-center.jpg',
-        leftImage: '/assets/timeline-left.jpg',
-        rightImage: '/assets/timeline-right.jpg'
+        centerImage: '/images/documentacion-parallax.jpg',
+        leftImage: '/images/filosofia-parallax.jpg',
+        rightImage: '/images/proyectos-parallax.jpg'
     },
     {
         title: 'Capítulo II',
@@ -53,9 +53,9 @@ const timelineTabs = [
             'Los dioses percibieron el impacto del libre albedrío y el surgimiento del Amor. Prefirieron esperar resultados antes de tomar una decisión definitiva sobre un nuevo Diluvio. Enki, comprendió el propósito de esta nueva etapa y decidió formar parte de ella.',
             'En una ocasión, Ninhursag descubrió el jardín prohibido por Enki. En lo profundo de aquel lugar, sobre un árbol de hojas oscuras, se posaba una figura misteriosa, envuelta en sombras. La criatura no emitía sonido alguno, solo observaba a Ninhursag, con una mirada que parecía perforar su espíritu. De repente, su forma comenzó a transformarse. Su cuerpo se alargó y adoptó un movimiento rastrero, deslizándose entre las hierbas sagradas del jardín. Intrigada, Ninhursag llamó a Adapa para mostrarle aquel ser desconocido.'
         ],
-        centerImage: '/assets/timeline-center.jpg',
-        leftImage: '/assets/timeline-left.jpg',
-        rightImage: '/assets/timeline-right.jpg'
+        centerImage: '/images/documentacion-parallax.jpg',
+        leftImage: '/images/filosofia-parallax.jpg',
+        rightImage: '/images/proyectos-parallax.jpg'
     }
 ];
 
@@ -98,8 +98,8 @@ function mapDataToTabs(chapters = []) {
             title,
             label: title,
             paragraphs: descriptionToParagraphs(chapter?.description),
-            centerImage: chapter?.image || '/assets/timeline-center.jpg',
-            leftImage: '/assets/timeline-left.jpg',
+            centerImage: chapter?.image || '/images/documentacion-parallax.jpg',
+            leftImage: '/images/filosofia-parallax.jpg',
             rightImage: timelineChapterRightImages[index % timelineChapterRightImages.length]
         };
     });
