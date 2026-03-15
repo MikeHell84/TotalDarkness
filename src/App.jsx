@@ -598,37 +598,32 @@ export default function App() {
   }, []);
 
   React.useEffect(() => {
-    if (typeof window === 'undefined' || !isMobileDevice) {
-      setIsGyroEnabled(false);
-      setShowGyroPermissionButton(false);
-      return;
-    }
+    if (typeof window === 'undefined') return;
+    if (!('DeviceOrientationEvent' in window)) return;
 
-    if (!('DeviceOrientationEvent' in window)) {
-      setIsGyroEnabled(false);
-      setShowGyroPermissionButton(false);
-      return;
-    }
-
+    // iOS 13+ requires explicit permission via a user gesture
     const requiresExplicitPermission = typeof window.DeviceOrientationEvent?.requestPermission === 'function';
     if (requiresExplicitPermission) {
-      setIsGyroEnabled(false);
-      setShowGyroPermissionButton(true);
+      // Show button only on mobile
+      if (isMobileDevice) setShowGyroPermissionButton(true);
       return;
     }
 
+    // Android / other: try to detect if gyro actually fires
+    // Set enabled optimistically; the event handler guards against bad values
     setIsGyroEnabled(true);
     setShowGyroPermissionButton(false);
   }, [isMobileDevice]);
 
   React.useEffect(() => {
-    if (typeof window === 'undefined' || !isGyroEnabled || !isMobileDevice) return;
+    if (typeof window === 'undefined' || !isGyroEnabled) return;
 
     const handleDeviceOrientation = (event) => {
       if (showIntro || activeSection || isTransitioning) return;
       const rotation = cameraRotationRef.current;
       if (!rotation || rotation.targetPlanet) return;
 
+      // event.absolute=true events from Android can have different axes; use beta/gamma regardless
       const beta = event.beta;
       const gamma = event.gamma;
       if (!Number.isFinite(beta) || !Number.isFinite(gamma)) return;
@@ -670,7 +665,7 @@ export default function App() {
     return () => {
       window.removeEventListener('deviceorientation', handleDeviceOrientation, true);
     };
-  }, [isGyroEnabled, isMobileDevice, showIntro, activeSection, isTransitioning]);
+  }, [isGyroEnabled, showIntro, activeSection, isTransitioning]);
 
   React.useEffect(() => {
     if (showIntro || activeSection || isTransitioning) {
@@ -783,11 +778,12 @@ export default function App() {
   };
 
   const requestGyroscopeAccess = React.useCallback(async () => {
-    if (typeof window === 'undefined' || !isMobileDevice) return;
+    if (typeof window === 'undefined') return;
 
     const orientationApi = window.DeviceOrientationEvent;
     if (!orientationApi) return;
 
+    // iOS 13+ requires explicit permission triggered by a user gesture
     const requestPermission = orientationApi.requestPermission;
     if (typeof requestPermission === 'function') {
       try {
@@ -802,9 +798,10 @@ export default function App() {
       return;
     }
 
+    // Android / other: no permission API needed, just enable
     setIsGyroEnabled(true);
     setShowGyroPermissionButton(false);
-  }, [isMobileDevice]);
+  }, []);
 
   const applyMusicVolumeState = React.useCallback((volumeValue, mutedValue) => {
     const effectiveVolume = mutedValue ? 0 : volumeValue;
@@ -2281,7 +2278,7 @@ export default function App() {
           </div>
         )}
 
-        {isMobileDevice && !showIntro && !activeSection && showGyroPermissionButton && (
+        {isMobileDevice && !showIntro && !activeSection && !isGyroEnabled && (
           <div className="fixed right-3 top-[62px] z-[80] pointer-events-auto">
             <button
               type="button"
