@@ -121,7 +121,7 @@ const MOON_IDS = new Set([
     'triton', 'nereida'
 ]);
 
-export function Planet({ data, onClick, planetRef, opacity = 1 }) {
+export function Planet({ data, onClick, planetRef, opacity = 1, shadowsEnabled = true }) {
     const meshRef = useRef();
     const modelRef = useRef();
     const ringRef = useRef();
@@ -228,8 +228,8 @@ export function Planet({ data, onClick, planetRef, opacity = 1 }) {
                         });
 
                         // Enable shadows for GLTF models
-                        node.castShadow = true;
-                        node.receiveShadow = true;
+                        node.castShadow = shadowsEnabled;
+                        node.receiveShadow = shadowsEnabled;
                     }
                 });
 
@@ -246,7 +246,7 @@ export function Planet({ data, onClick, planetRef, opacity = 1 }) {
         return () => {
             isCancelled = true;
         };
-    }, [data.modelPath, data.color, opacity]);
+    }, [data.modelPath, data.color, opacity, isSun, shadowsEnabled, data.id]);
 
     useFrame((state, delta) => {
         const rotatingObject = modelRef.current || meshRef.current;
@@ -299,8 +299,8 @@ export function Planet({ data, onClick, planetRef, opacity = 1 }) {
                         onClick(data);
                     }}
                     userData={{ id: data.id, name: data.name, isLensOccluder: !isSun, planetId: data.id }}
-                    castShadow
-                    receiveShadow
+                    castShadow={shadowsEnabled}
+                    receiveShadow={shadowsEnabled}
                 >
                     <sphereGeometry args={[renderSize, 32, 32]} />
                     <meshStandardMaterial

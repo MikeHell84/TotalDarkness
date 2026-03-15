@@ -39,6 +39,10 @@ export default function App() {
   const [isPanelPoweringOn, setIsPanelPoweringOn] = useState(false);
   const [selectedTimelineChapter, setSelectedTimelineChapter] = useState(null);
   const [timelineZoom, setTimelineZoom] = useState(1);
+  const [isMobileDevice, setIsMobileDevice] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 1024px)').matches;
+  });
   const LOGO_FLY_TRANSITION_MS = 1500;
   const PANEL_TV_OFF_MS = 300;
   const PANEL_TV_ON_MS = 300;
@@ -68,6 +72,25 @@ export default function App() {
       setTimelineZoom(1);
     }
   }, [activeSection]);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
+    const handleMediaChange = (event) => {
+      setIsMobileDevice(event.matches);
+    };
+
+    setIsMobileDevice(mediaQuery.matches);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleMediaChange);
+      return () => mediaQuery.removeEventListener('change', handleMediaChange);
+    }
+
+    mediaQuery.addListener(handleMediaChange);
+    return () => mediaQuery.removeListener(handleMediaChange);
+  }, []);
 
   const triggerPanelPowerOn = React.useCallback(() => {
     if (panelPowerOnRevealTimeoutRef.current) {
@@ -1199,9 +1222,14 @@ export default function App() {
       {
         isWebGLAvailable ? (
           <Canvas
-            shadows
+            shadows={!isMobileDevice}
+            dpr={isMobileDevice ? [1, 1.2] : [1, 1.8]}
             camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 4000 }}
-            gl={{ antialias: true, alpha: true }}
+            gl={{
+              antialias: !isMobileDevice,
+              alpha: true,
+              powerPreference: 'high-performance'
+            }}
             style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', zIndex: 0 }}
             className="cursor-grab active:cursor-grabbing"
           >
@@ -1223,6 +1251,7 @@ export default function App() {
               timeline={timeline}
               timelineZoom={timelineZoom}
               onTimelineConstellationReady={handleTimelineConstellationReady}
+              isMobile={isMobileDevice}
             />
           </Canvas>
         ) : (

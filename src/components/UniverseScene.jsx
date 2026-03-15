@@ -25,7 +25,8 @@ export function UniverseScene({
     activeSection = null,
     timeline = [],
     timelineZoom = 1,
-    onTimelineConstellationReady
+    onTimelineConstellationReady,
+    isMobile = false
 }) {
     const planetRefs = useRef([]);
     const orbitingPlanets = useRef({});
@@ -360,7 +361,7 @@ export function UniverseScene({
             <fogExp2 attach="fog" args={[0x000000, 0.0005]} />
 
             <mesh ref={backgroundSphereRef} rotation={[0, Math.PI, 0]} userData={{ ignoreLensOcclusion: true }}>
-                <sphereGeometry args={[900, 96, 96]} />
+                <sphereGeometry args={[900, isMobile ? 48 : 96, isMobile ? 48 : 96]} />
                 <meshBasicMaterial
                     map={universeTexture}
                     side={THREE.BackSide}
@@ -378,18 +379,18 @@ export function UniverseScene({
                 position={[16, 8, -4]}
                 intensity={4.2}
                 color="#FDB813"
-                castShadow
+                castShadow={!isMobile}
                 distance={2000}
                 decay={1.75}
-                shadow-mapSize-width={2048}
-                shadow-mapSize-height={2048}
+                shadow-mapSize-width={isMobile ? 512 : 2048}
+                shadow-mapSize-height={isMobile ? 512 : 2048}
                 shadow-camera-near={0.5}
                 shadow-camera-far={1400}
                 shadow-bias={-0.00015}
                 shadow-normalBias={0.03}
             />
 
-            <Starfield opacity={starfieldOpacity} />
+            <Starfield opacity={starfieldOpacity} isMobile={isMobile} />
 
             {/* Lens flare effect from the sun */}
             <LensFlare sunPosition={sunPositionRef.current} opacity={planetsOpacity} />
@@ -401,6 +402,7 @@ export function UniverseScene({
                     onClick={onPlanetClick}
                     planetRef={(el) => (planetRefs.current[index] = el)}
                     opacity={planetsOpacity}
+                    shadowsEnabled={!isMobile}
                 />
             ))}
 
