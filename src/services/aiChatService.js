@@ -1,11 +1,10 @@
 /**
  * Total Darkness AI Chat Service
  * Uses OpenRouter (free tier) — model: meta-llama/llama-3.1-8b-instruct:free
- * Register at https://openrouter.ai and create a free API key (no credit card required).
- * Set VITE_OPENROUTER_API_KEY in your .env file.
+ * Requests are proxied through /api/ai-chat to keep API keys server-side.
  */
 
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const AI_PROXY_URL = '/api/ai-chat';
 const FREE_MODELS = [
     'google/gemma-3-4b-it:free',
     'meta-llama/llama-3.2-3b-instruct:free',
@@ -167,13 +166,10 @@ function buildMessagesForModel(model, messages, locale) {
 /**
  * Sends a message to the AI and returns the response.
  * @param {Array<{role: string, content: string}>} messages - Chat history
- * @param {string} apiKey - OpenRouter API key from env
+ * @param {string} locale - UI locale (es|en)
  * @returns {Promise<string>} - The AI response text
  */
-export async function sendChatMessage(messages, apiKey, locale) {
-    if (!apiKey) {
-        throw new Error('NO_API_KEY');
-    }
+export async function sendChatMessage(messages, locale) {
 
     const latestUserMessage = [...(messages || [])].reverse().find((message) => message?.role === 'user')?.content || '';
     const resolvedLocale = resolveLocale(locale, latestUserMessage);
@@ -187,13 +183,10 @@ export async function sendChatMessage(messages, apiKey, locale) {
 
     for (const model of FREE_MODELS) {
         for (let attempt = 0; attempt < RETRY_ATTEMPTS_PER_MODEL; attempt += 1) {
-            const response = await fetch(OPENROUTER_API_URL, {
+            const response = await fetch(AI_PROXY_URL, {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${apiKey}`,
                     'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://totaldarkness.dev',
-                    'X-OpenRouter-Title': 'Total Darkness - ENKI Oracle',
                 },
                 body: JSON.stringify({
                     model,

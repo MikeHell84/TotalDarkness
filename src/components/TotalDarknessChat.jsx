@@ -2,8 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { sendChatMessage } from '../services/aiChatService';
 import { useLanguage } from '../context/LanguageContext';
 
-const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '';
-
 /* ── Inject CSS once ─────────────────────────────────────── */
 const CHAT_CSS = `
 @keyframes tdchat-scanline {
@@ -199,9 +197,9 @@ function NoKeyNotice({ labels }) {
         >
             <strong>{labels.noKeyTitle}</strong>
             <br />
-            {labels.noKeyBody} <code>.env</code>:
+            {labels.noKeyBody} <code>Vercel Environment Variables</code>:
             <br />
-            <code>VITE_OPENROUTER_API_KEY=sk-or-v1-...</code>
+            <code>OPENROUTER_API_KEY=sk-or-v1-...</code>
             <br />
             <a
                 href="https://openrouter.ai/keys"
@@ -308,7 +306,7 @@ export default function TotalDarknessChat() {
         try {
             // Only pass user/assistant messages (not the welcome if it's the first)
             const apiHistory = history.filter((m) => m.role !== 'system');
-            const reply = await sendChatMessage(apiHistory, API_KEY, lang);
+            const reply = await sendChatMessage(apiHistory, lang);
             setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
         } catch (err) {
             if (err.message === 'NO_API_KEY') {
@@ -544,7 +542,7 @@ export default function TotalDarknessChat() {
                     scrollbarColor: 'rgba(0,224,255,0.2) transparent',
                 }}
             >
-                {!API_KEY && <NoKeyNotice labels={labels} />}
+                {error === 'no_key' && <NoKeyNotice labels={labels} />}
 
                 {messages.map((msg, i) => (
                     <MessageBubble key={i} msg={msg} labels={labels} />
@@ -603,7 +601,7 @@ export default function TotalDarknessChat() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKey}
                     placeholder={labels.inputPlaceholder}
-                    disabled={loading || !API_KEY}
+                    disabled={loading}
                     rows={1}
                     style={{
                         flex: 1,
@@ -620,7 +618,7 @@ export default function TotalDarknessChat() {
                         maxHeight: 100,
                         overflowY: 'auto',
                         lineHeight: 1.5,
-                        opacity: !API_KEY ? 0.4 : 1,
+                        opacity: 1,
                     }}
                     onInput={(e) => {
                         e.target.style.height = 'auto';
@@ -629,13 +627,13 @@ export default function TotalDarknessChat() {
                 />
                 <button
                     onClick={sendMessage}
-                    disabled={loading || !input.trim() || !API_KEY}
+                    disabled={loading || !input.trim()}
                     style={{
-                        background: loading || !input.trim() || !API_KEY ? 'rgba(0,224,255,0.1)' : ACCENT_DIM,
+                        background: loading || !input.trim() ? 'rgba(0,224,255,0.1)' : ACCENT_DIM,
                         border: `1px solid ${loading || !input.trim() ? 'rgba(0,224,255,0.2)' : ACCENT}`,
                         borderRadius: 8,
                         color: loading || !input.trim() ? 'rgba(0,224,255,0.3)' : ACCENT,
-                        cursor: loading || !input.trim() || !API_KEY ? 'not-allowed' : 'pointer',
+                        cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
                         padding: '8px 14px',
                         fontSize: 13,
                         fontFamily: 'monospace',
